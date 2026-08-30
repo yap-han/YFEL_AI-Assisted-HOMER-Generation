@@ -1,0 +1,36 @@
+{
+  "id": "generic_energy_system_example",
+  "name": "Example context-neutral energy-site profile",
+  "version": "0.2.0",
+  "description": "Replace the locations and domain terms to reuse the retrieval engine for another facility, community or industrial process.",
+  "region_search_term": "target region",
+  "locations": ["target location"],
+  "domain_terms": [
+    "facility energy system",
+    "site load",
+    "microgrid",
+    "distributed energy system"
+  ],
+  "analogue_terms": [
+    "comparable climate",
+    "comparable grid",
+    "comparable load profile"
+  ],
+  "query_domain_terms": [
+    "facility energy system",
+    "site load",
+    "microgrid",
+    "distributed energy system"
+  ],
+  "energy_system_terms": [
+    "HOMER",
+    "techno-economic optimization",
+    "renewable conventional generation mix",
+    "hybrid energy system"
+  ],
+  "query_templates": [
+    "{domain_clause} ({family_clause}) \"{location}\"",
+    "{domain_clause} ({family_clause}) ({analogue_clause})",
+    "{domain_clause} ({family_clause}) ({energy_clause})"
+  ]
+}

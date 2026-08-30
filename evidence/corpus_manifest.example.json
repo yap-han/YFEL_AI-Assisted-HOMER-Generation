@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "corpus_id": "synthetic_ingestion_example",
+  "description": "A minimal manifest for testing the repository workflow. Replace this document with lawfully accessed research full texts.",
+  "default_rights_note": "Synthetic fixture created for this software repository; permitted for ingestion and testing.",
+  "quality_gate": {
+    "minimum_characters": 200,
+    "required_sections": []
+  },
+  "documents": [
+    {
+      "source_id": "synthetic_workflow_document_001",
+      "title": "Synthetic quantitative extraction fixture",
+      "file": "../data/demo_fulltext.txt",
+      "source_type": "synthetic_fixture",
+      "peer_reviewed": false,
+      "open_access": true,
+      "region_scope": "demonstration",
+      "countries": [],
+      "system_types": ["hybrid_energy_system"],
+      "parameter_families": ["renewable_resources", "economics_resilience"],
+      "evidence_level": "software_test_only",
+      "source_verification_status": "synthetic_fixture",
+      "quality_score": 0,
+      "allowed_to_ingest": true,
+      "relevance_note": "Not research evidence and must not be cited as a parameter source."
+    }
+  ]
+}

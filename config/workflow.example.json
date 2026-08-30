@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "database": "../output/workflow/workflow.sqlite",
+  "context": {
+    "ontology": "ontology.json",
+    "profile": "study_profile.json"
+  },
+  "ingestion": {
+    "manifest": "../evidence/corpus_manifest.example.json",
+    "require_rights": true,
+    "fail_fast": true
+  },
+  "extraction": {
+    "parameters": [
+      "pv.capital_cost",
+      "generator.capital_cost",
+      "battery.round_trip_efficiency"
+    ],
+    "output_dir": "../output/workflow/extraction_tasks"
+  },
+  "validation": {
+    "enabled": false,
+    "include_candidates": false,
+    "minimum_independent_sources": 2
+  },
+  "reports": {
+    "output_dir": "../output/workflow/reports"
+  },
+  "run_summary": "../output/workflow/workflow_run.json"
+}

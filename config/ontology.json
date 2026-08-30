@@ -1,0 +1,910 @@
+{
+  "name": "GCC Fish-Farm HOMER Parameter Ontology",
+  "version": "0.2.0",
+  "created": "2026-08-29",
+  "scope": {
+    "countries": ["Bahrain", "Kuwait", "Oman", "Qatar", "Saudi Arabia", "United Arab Emirates"],
+    "farm_systems": ["pond", "raceway", "recirculating_aquaculture_system", "aquaponics", "hatchery", "sea_cage"],
+    "energy_architectures": ["grid_connected", "islanded", "hybrid_microgrid"],
+    "model": "HOMER Pro",
+    "time_resolution_preference": "hourly or finer"
+  },
+  "design_principles": [
+    "Separate raw evidence from model assumptions",
+    "Keep source and extraction provenance at parameter level",
+    "Treat biological safety constraints as energy-model requirements",
+    "Keep demand context, technology families and evidence policy as replaceable modules",
+    "Represent renewable, grid and dispatchable generation on comparable cost, performance, emissions and reliability bases",
+    "Prefer measured GCC data and peer-reviewed sources",
+    "Label global evidence as a transferability assumption"
+  ],
+  "families": [
+    {
+      "id": "farm_context",
+      "label": "Farm and production context",
+      "retrieval_terms": ["production capacity", "stocking density", "fish biomass", "system design", "species", "farm scale"],
+      "parameter_defaults": {
+        "criticality": "medium",
+        "evidence_preference": ["measured_farm_data", "academic_peer_reviewed", "official_government"],
+        "validation": {"rule": "human_context_review"}
+      },
+      "parameters": [
+        {
+          "id": "farm.country",
+          "label": "GCC country",
+          "data_type": "string",
+          "value_kind": "categorical",
+          "canonical_unit": "none",
+          "allowed_units": [],
+          "description": "Country in which the fish farm is located.",
+          "extraction_terms": ["country", "location", "site"],
+          "homer_mapping": {"type": "project_metadata", "field": "country"}
+        },
+        {
+          "id": "farm.system_type",
+          "label": "Aquaculture system type",
+          "data_type": "string",
+          "value_kind": "categorical",
+          "canonical_unit": "none",
+          "allowed_units": [],
+          "description": "Pond, raceway, RAS, aquaponics, hatchery or sea-cage production system.",
+          "extraction_terms": ["RAS", "pond", "raceway", "aquaponics", "hatchery", "sea cage"],
+          "homer_mapping": {"type": "scenario_metadata", "field": "system_type"}
+        },
+        {
+          "id": "farm.species",
+          "label": "Cultured species",
+          "data_type": "string",
+          "value_kind": "categorical",
+          "canonical_unit": "none",
+          "allowed_units": [],
+          "description": "Species or species group cultured at the facility.",
+          "extraction_terms": ["species", "seabream", "shrimp", "tilapia", "pompano"],
+          "homer_mapping": {"type": "scenario_metadata", "field": "species"}
+        },
+        {
+          "id": "farm.production_capacity",
+          "label": "Annual production capacity",
+          "data_type": "number",
+          "value_kind": "scalar",
+          "canonical_unit": "t/year",
+          "allowed_units": ["t/year", "kg/year"],
+          "description": "Design or achieved annual saleable fish production.",
+          "extraction_terms": ["production capacity", "annual production", "fish produced"],
+          "homer_mapping": {"type": "scaling_driver", "field": "production_capacity"}
+        },
+        {
+          "id": "farm.live_biomass",
+          "label": "Standing live biomass",
+          "data_type": "number",
+          "value_kind": "timeseries",
+          "canonical_unit": "kg",
+          "allowed_units": ["kg", "t"],
+          "criticality": "high",
+          "description": "Live fish biomass used to scale oxygen, circulation and feeding requirements.",
+          "extraction_terms": ["biomass", "standing stock", "live weight"],
+          "homer_mapping": {"type": "load_driver", "field": "biomass_profile"}
+        },
+        {
+          "id": "farm.stocking_density",
+          "label": "Stocking density",
+          "data_type": "number",
+          "value_kind": "range",
+          "canonical_unit": "kg/m3",
+          "allowed_units": ["kg/m3", "g/L"],
+          "criticality": "high",
+          "description": "Biomass per culture-water volume under normal operation.",
+          "extraction_terms": ["stocking density", "biomass density", "kg/m3"],
+          "homer_mapping": {"type": "load_driver", "field": "stocking_density"}
+        }
+      ]
+    },
+    {
+      "id": "aquaculture_load",
+      "label": "Aquaculture electrical and thermal loads",
+      "retrieval_terms": ["electricity consumption", "energy use", "load profile", "aeration power", "pumping power", "cooling demand", "oxygenation"],
+      "parameter_defaults": {
+        "data_type": "number",
+        "value_kind": "scalar",
+        "canonical_unit": "kW",
+        "allowed_units": ["kW", "W", "MW"],
+        "criticality": "high",
+        "evidence_preference": ["measured_farm_data", "academic_peer_reviewed", "equipment_datasheet"],
+        "validation": {"min": 0, "rule": "nonnegative_and_load_balance"}
+      },
+      "parameters": [
+        {
+          "id": "load.ac_primary_profile",
+          "label": "Total AC primary load profile",
+          "value_kind": "timeseries",
+          "criticality": "safety_critical",
+          "description": "Chronological facility electrical demand before on-site generation.",
+          "extraction_terms": ["hourly load", "electricity profile", "power demand", "8760"],
+          "homer_mapping": {"component": "Electric Load", "field": "time_series"}
+        },
+        {
+          "id": "load.daily_energy",
+          "label": "Average daily electricity use",
+          "canonical_unit": "kWh/day",
+          "allowed_units": ["kWh/day", "MWh/day", "kWh/year", "MWh/year"],
+          "description": "Mean daily energy consumption for scaling and cross-checking the load series.",
+          "extraction_terms": ["daily electricity", "daily energy", "annual electricity consumption"],
+          "homer_mapping": {"component": "Electric Load", "field": "scaled_annual_average"}
+        },
+        {
+          "id": "load.peak_demand",
+          "label": "Peak electrical demand",
+          "description": "Maximum coincident facility demand in the modelled period.",
+          "extraction_terms": ["peak demand", "maximum demand", "peak load"],
+          "homer_mapping": {"component": "Electric Load", "field": "peak_load_check"}
+        },
+        {
+          "id": "load.aeration_power",
+          "label": "Aeration power",
+          "criticality": "safety_critical",
+          "description": "Electrical power for pond or tank aerators and air blowers.",
+          "extraction_terms": ["aeration", "aerator", "blower power"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "aeration"}
+        },
+        {
+          "id": "load.oxygenation_power",
+          "label": "Oxygenation power",
+          "criticality": "safety_critical",
+          "description": "Power used by oxygen generators, compressors or oxygen-transfer equipment.",
+          "extraction_terms": ["oxygenation", "oxygen generator", "oxygen compressor"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "oxygenation"}
+        },
+        {
+          "id": "load.circulation_pump_power",
+          "label": "Recirculation pumping power",
+          "criticality": "safety_critical",
+          "description": "Power required to circulate water through tanks and treatment units.",
+          "extraction_terms": ["recirculation pump", "water circulation", "pump power"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "circulation_pumps"}
+        },
+        {
+          "id": "load.intake_discharge_pump_power",
+          "label": "Intake and discharge pumping power",
+          "description": "Power for seawater or freshwater intake, make-up water and discharge pumping.",
+          "extraction_terms": ["intake pump", "make-up water", "discharge pump"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "intake_discharge"}
+        },
+        {
+          "id": "load.filtration_power",
+          "label": "Mechanical and biological filtration power",
+          "description": "Power for drum filters, biofilters, backwash and solids removal.",
+          "extraction_terms": ["filtration", "drum filter", "biofilter", "backwash"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "filtration"}
+        },
+        {
+          "id": "load.disinfection_power",
+          "label": "UV and ozone disinfection power",
+          "description": "Electrical demand of ultraviolet, ozone and related disinfection equipment.",
+          "extraction_terms": ["UV", "ultraviolet", "ozone", "disinfection"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "disinfection"}
+        },
+        {
+          "id": "load.cooling_power",
+          "label": "Cooling and dehumidification power",
+          "criticality": "safety_critical",
+          "description": "Electric demand for water chilling, space cooling and dehumidification under GCC conditions.",
+          "extraction_terms": ["cooling", "chiller", "HVAC", "dehumidification"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "cooling"}
+        },
+        {
+          "id": "load.heating_power",
+          "label": "Water and space heating power",
+          "description": "Electrical-equivalent demand for maintaining biological temperature limits.",
+          "extraction_terms": ["heating", "heat pump", "water heating"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "heating"}
+        },
+        {
+          "id": "load.feeding_power",
+          "label": "Automated feeding power",
+          "description": "Power for feeders, feed conveyors and feeding controls.",
+          "extraction_terms": ["automatic feeder", "feeding system", "feed conveyor"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "feeding"}
+        },
+        {
+          "id": "load.lighting_power",
+          "label": "Lighting power",
+          "description": "Tank, building and photoperiod lighting demand.",
+          "extraction_terms": ["lighting", "photoperiod", "LED"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "lighting"}
+        },
+        {
+          "id": "load.monitoring_controls_power",
+          "label": "Monitoring and controls power",
+          "description": "Demand for sensors, PLCs, communications, alarms and data systems.",
+          "extraction_terms": ["monitoring", "sensors", "PLC", "control system"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "controls"}
+        },
+        {
+          "id": "load.desalination_power",
+          "label": "Desalination power",
+          "description": "Power used to provide make-up or process water through desalination.",
+          "extraction_terms": ["desalination", "reverse osmosis", "RO energy"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "desalination"}
+        },
+        {
+          "id": "load.cold_chain_power",
+          "label": "Ice, processing and cold-storage power",
+          "description": "Post-harvest processing, ice production and refrigeration demand inside the study boundary.",
+          "extraction_terms": ["ice machine", "cold storage", "processing", "refrigeration"],
+          "homer_mapping": {"type": "load_disaggregation", "field": "cold_chain"}
+        },
+        {
+          "id": "load.specific_energy_consumption",
+          "label": "Specific electricity consumption",
+          "canonical_unit": "kWh/kg_fish",
+          "allowed_units": ["kWh/kg_fish", "MWh/t_fish"],
+          "description": "Electricity consumed per unit of saleable fish production.",
+          "extraction_terms": ["kWh/kg", "specific energy consumption", "energy intensity"],
+          "homer_mapping": {"type": "validation_metric", "field": "specific_energy"}
+        }
+      ]
+    },
+    {
+      "id": "site_environment",
+      "label": "Site environment and biological constraints",
+      "retrieval_terms": ["ambient temperature", "water temperature", "dissolved oxygen", "oxygen demand", "thermal tolerance", "humidity", "salinity"],
+      "parameter_defaults": {
+        "data_type": "number",
+        "value_kind": "timeseries",
+        "criticality": "high",
+        "evidence_preference": ["measured_farm_data", "academic_peer_reviewed", "official_meteorological_data"],
+        "validation": {"rule": "range_and_chronology_check"}
+      },
+      "parameters": [
+        {
+          "id": "site.ambient_temperature",
+          "label": "Ambient dry-bulb temperature",
+          "canonical_unit": "degC",
+          "allowed_units": ["degC", "K"],
+          "description": "Chronological ambient air temperature used for cooling, PV and battery conditions.",
+          "extraction_terms": ["ambient temperature", "dry bulb", "air temperature"],
+          "homer_mapping": {"component": "Temperature Resource", "field": "time_series"}
+        },
+        {
+          "id": "site.relative_humidity",
+          "label": "Relative humidity",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "description": "Ambient humidity affecting HVAC and dehumidification requirements.",
+          "extraction_terms": ["relative humidity", "humidity"],
+          "homer_mapping": {"type": "load_driver", "field": "relative_humidity"}
+        },
+        {
+          "id": "site.water_temperature",
+          "label": "Culture-water temperature",
+          "canonical_unit": "degC",
+          "allowed_units": ["degC", "K"],
+          "criticality": "safety_critical",
+          "description": "Measured or modelled water temperature profile.",
+          "extraction_terms": ["water temperature", "culture temperature", "tank temperature"],
+          "homer_mapping": {"type": "biological_constraint", "field": "water_temperature"}
+        },
+        {
+          "id": "site.dissolved_oxygen_minimum",
+          "label": "Minimum dissolved oxygen",
+          "value_kind": "scalar",
+          "canonical_unit": "mg/L",
+          "allowed_units": ["mg/L", "ppm"],
+          "criticality": "safety_critical",
+          "description": "Minimum permissible dissolved oxygen for the modelled species and life stage.",
+          "extraction_terms": ["minimum dissolved oxygen", "DO threshold", "oxygen safety margin"],
+          "homer_mapping": {"type": "biological_constraint", "field": "minimum_dissolved_oxygen"}
+        },
+        {
+          "id": "site.oxygen_demand",
+          "label": "Farm oxygen demand",
+          "canonical_unit": "kgO2/day",
+          "allowed_units": ["kgO2/day", "kgO2/hour", "gO2/kg_fish/hour"],
+          "criticality": "safety_critical",
+          "description": "Oxygen demand of fish and treatment processes under the modelled biomass.",
+          "extraction_terms": ["oxygen demand", "oxygen consumption", "kg O2"],
+          "homer_mapping": {"type": "load_driver", "field": "oxygen_demand"}
+        },
+        {
+          "id": "site.minimum_circulation_flow",
+          "label": "Minimum safe circulation flow",
+          "canonical_unit": "m3/hour",
+          "allowed_units": ["m3/hour", "L/s", "m3/s"],
+          "criticality": "safety_critical",
+          "description": "Minimum water flow required during normal and emergency operation.",
+          "extraction_terms": ["minimum flow", "recirculation rate", "turnover rate"],
+          "homer_mapping": {"type": "critical_load_constraint", "field": "minimum_flow"}
+        },
+        {
+          "id": "site.maximum_power_interruption",
+          "label": "Maximum tolerable power interruption",
+          "value_kind": "scalar",
+          "canonical_unit": "hour",
+          "allowed_units": ["hour", "minute"],
+          "criticality": "safety_critical",
+          "description": "Longest interruption before fish-welfare or mortality thresholds may be exceeded.",
+          "extraction_terms": ["power outage", "survival time", "emergency aeration", "backup duration"],
+          "homer_mapping": {"type": "reliability_constraint", "field": "maximum_interruption"}
+        }
+      ]
+    },
+    {
+      "id": "grid_and_fuels",
+      "label": "Grid, tariffs and backup fuel",
+      "retrieval_terms": ["electricity tariff", "demand charge", "grid outage", "electricity emissions", "diesel price", "backup generator"],
+      "parameter_defaults": {
+        "data_type": "number",
+        "value_kind": "scalar",
+        "criticality": "high",
+        "evidence_preference": ["official_regulator", "utility_tariff", "measured_farm_data", "academic_peer_reviewed"],
+        "validation": {"min": 0, "rule": "currency_time_and_basis_check"}
+      },
+      "parameters": [
+        {
+          "id": "grid.purchase_price",
+          "label": "Grid electricity purchase price",
+          "value_kind": "timeseries",
+          "canonical_unit": "USD/kWh",
+          "allowed_units": ["USD/kWh", "local_currency/kWh"],
+          "description": "Energy charge paid for imported electricity, including time-of-use variation where relevant.",
+          "extraction_terms": ["electricity tariff", "energy charge", "purchase price"],
+          "homer_mapping": {"component": "Grid", "field": "realtime_power_price"}
+        },
+        {
+          "id": "grid.sellback_price",
+          "label": "Grid export compensation",
+          "value_kind": "timeseries",
+          "canonical_unit": "USD/kWh",
+          "allowed_units": ["USD/kWh", "local_currency/kWh"],
+          "description": "Compensation for electricity exported to the grid.",
+          "extraction_terms": ["feed-in tariff", "export tariff", "sellback"],
+          "homer_mapping": {"component": "Grid", "field": "realtime_sellback_rate"}
+        },
+        {
+          "id": "grid.demand_charge",
+          "label": "Demand charge",
+          "canonical_unit": "USD/kW/month",
+          "allowed_units": ["USD/kW/month", "local_currency/kW/month"],
+          "description": "Charge based on monthly or scheduled maximum demand.",
+          "extraction_terms": ["demand charge", "maximum demand tariff"],
+          "homer_mapping": {"component": "Grid", "field": "demand_rate"}
+        },
+        {
+          "id": "grid.purchase_capacity",
+          "label": "Grid import capacity",
+          "canonical_unit": "kW",
+          "allowed_units": ["kW", "MW"],
+          "description": "Maximum instantaneous grid import permitted by the connection.",
+          "extraction_terms": ["connection capacity", "import capacity", "contracted demand"],
+          "homer_mapping": {"component": "Grid", "field": "purchase_capacity"}
+        },
+        {
+          "id": "grid.outage_frequency",
+          "label": "Grid outage frequency",
+          "canonical_unit": "events/year",
+          "allowed_units": ["events/year", "events/month"],
+          "criticality": "safety_critical",
+          "description": "Expected number of grid interruption events.",
+          "extraction_terms": ["outage frequency", "SAIFI", "interruptions"],
+          "homer_mapping": {"component": "Grid Reliability", "field": "outage_frequency"}
+        },
+        {
+          "id": "grid.mean_outage_duration",
+          "label": "Mean grid outage duration",
+          "canonical_unit": "hour",
+          "allowed_units": ["hour", "minute"],
+          "criticality": "safety_critical",
+          "description": "Mean duration of grid interruption events.",
+          "extraction_terms": ["outage duration", "SAIDI", "interruption duration"],
+          "homer_mapping": {"component": "Grid Reliability", "field": "mean_outage_duration"}
+        },
+        {
+          "id": "grid.emissions_factor",
+          "label": "Grid carbon emissions factor",
+          "canonical_unit": "kgCO2e/kWh",
+          "allowed_units": ["kgCO2e/kWh", "gCO2e/kWh"],
+          "description": "Operational emissions intensity of imported electricity.",
+          "extraction_terms": ["grid emissions factor", "carbon intensity", "kg CO2 per kWh"],
+          "homer_mapping": {"component": "Grid Emissions", "field": "carbon_dioxide"}
+        },
+        {
+          "id": "fuel.diesel_price",
+          "label": "Delivered diesel price",
+          "canonical_unit": "USD/L",
+          "allowed_units": ["USD/L", "local_currency/L"],
+          "description": "Delivered diesel price for backup or islanded generation.",
+          "extraction_terms": ["diesel price", "fuel cost", "delivered fuel"],
+          "homer_mapping": {"component": "Fuel", "field": "price"}
+        },
+        {
+          "id": "fuel.generator_minimum_load",
+          "label": "Generator minimum load ratio",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "description": "Minimum stable operating load of the backup generator.",
+          "extraction_terms": ["minimum load ratio", "minimum loading", "genset"],
+          "homer_mapping": {"component": "Generator", "field": "minimum_load_ratio"}
+        }
+      ]
+    },
+    {
+      "id": "conventional_generation",
+      "label": "Conventional and dispatchable generation",
+      "retrieval_terms": [
+        "diesel generator",
+        "natural gas generator",
+        "gas turbine",
+        "generator cost",
+        "fuel consumption",
+        "heat rate",
+        "generator emissions"
+      ],
+      "parameter_defaults": {
+        "criticality": "high",
+        "evidence_preference": [
+          "academic_peer_reviewed",
+          "official_government",
+          "technical_standard",
+          "manufacturer_datasheet",
+          "vendor_quote"
+        ],
+        "validation": {"rule": "human_system_boundary_and_source_review"}
+      },
+      "parameters": [
+        {
+          "id": "generator.technology",
+          "label": "Dispatchable generator technology",
+          "data_type": "string",
+          "value_kind": "categorical",
+          "canonical_unit": "none",
+          "allowed_units": [],
+          "description": "Candidate dispatchable technology, such as a diesel genset, natural-gas engine or gas turbine.",
+          "extraction_terms": ["diesel generator", "natural gas engine", "gas turbine", "genset"],
+          "homer_mapping": {"component": "Generator", "field": "generator_type"}
+        },
+        {
+          "id": "generator.capacity_candidates",
+          "label": "Generator capacity candidates",
+          "data_type": "number",
+          "value_kind": "range",
+          "canonical_unit": "kW",
+          "allowed_units": ["kW", "MW"],
+          "description": "Discrete or ranged nameplate capacities considered by the optimisation.",
+          "extraction_terms": ["rated power", "generator capacity", "nameplate capacity"],
+          "homer_mapping": {"component": "Generator", "field": "sizes_to_consider"}
+        },
+        {
+          "id": "generator.capital_cost",
+          "label": "Generator capital cost",
+          "data_type": "number",
+          "value_kind": "range",
+          "canonical_unit": "USD/kW",
+          "allowed_units": ["USD/kW", "USD/unit", "local_currency/kW"],
+          "description": "Installed capital cost on a stated currency-year and system boundary.",
+          "extraction_terms": ["capital cost", "installed cost", "generator CAPEX"],
+          "homer_mapping": {"component": "Generator", "field": "capital_cost"}
+        },
+        {
+          "id": "generator.replacement_cost",
+          "label": "Generator replacement cost",
+          "data_type": "number",
+          "value_kind": "range",
+          "canonical_unit": "USD/kW",
+          "allowed_units": ["USD/kW", "USD/unit", "local_currency/kW"],
+          "description": "Replacement cost on the same capacity, currency-year and installation basis as capital cost.",
+          "extraction_terms": ["replacement cost", "overhaul cost", "engine replacement"],
+          "homer_mapping": {"component": "Generator", "field": "replacement_cost"}
+        },
+        {
+          "id": "generator.om_cost",
+          "label": "Generator operating and maintenance cost",
+          "data_type": "number",
+          "value_kind": "range",
+          "canonical_unit": "USD/operating_hour",
+          "allowed_units": ["USD/operating_hour", "USD/kWh", "local_currency/operating_hour"],
+          "description": "Non-fuel variable operation and maintenance cost.",
+          "extraction_terms": ["O&M cost", "maintenance cost", "variable operating cost"],
+          "homer_mapping": {"component": "Generator", "field": "operation_maintenance_cost"}
+        },
+        {
+          "id": "generator.electrical_efficiency",
+          "label": "Generator electrical efficiency",
+          "data_type": "number",
+          "value_kind": "range",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "description": "Net electrical efficiency under stated loading and ambient conditions.",
+          "extraction_terms": ["electrical efficiency", "generator efficiency", "part-load efficiency"],
+          "homer_mapping": {"component": "Generator", "field": "fuel_curve_derived_efficiency"}
+        },
+        {
+          "id": "generator.heat_rate",
+          "label": "Generator heat rate",
+          "data_type": "number",
+          "value_kind": "range",
+          "canonical_unit": "MJ/kWh",
+          "allowed_units": ["MJ/kWh", "Btu/kWh", "kJ/kWh"],
+          "description": "Fuel-energy input required per unit of net electrical output.",
+          "extraction_terms": ["heat rate", "specific fuel consumption", "fuel curve"],
+          "homer_mapping": {"component": "Generator", "field": "fuel_curve"}
+        },
+        {
+          "id": "generator.operating_lifetime",
+          "label": "Generator operating lifetime",
+          "data_type": "number",
+          "value_kind": "range",
+          "canonical_unit": "h",
+          "allowed_units": ["h", "operating_hours", "years"],
+          "description": "Expected operating life before replacement or major overhaul.",
+          "extraction_terms": ["operating lifetime", "engine life", "overhaul interval"],
+          "homer_mapping": {"component": "Generator", "field": "lifetime_hours"}
+        },
+        {
+          "id": "generator.availability",
+          "label": "Generator availability",
+          "data_type": "number",
+          "value_kind": "range",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "description": "Fraction of time the generator is available after planned and forced outages.",
+          "extraction_terms": ["availability", "forced outage rate", "maintenance outage"],
+          "homer_mapping": {"component": "Generator", "field": "scheduled_random_outages"}
+        },
+        {
+          "id": "generator.fuel_type",
+          "label": "Generator fuel type",
+          "data_type": "string",
+          "value_kind": "categorical",
+          "canonical_unit": "none",
+          "allowed_units": [],
+          "description": "Fuel used by the dispatchable generator, including diesel, natural gas or another approved fuel.",
+          "extraction_terms": ["diesel", "natural gas", "LNG", "fuel oil"],
+          "homer_mapping": {"component": "Fuel", "field": "fuel_type"}
+        },
+        {
+          "id": "generator.fuel_price",
+          "label": "Delivered generator fuel price",
+          "data_type": "number",
+          "value_kind": "timeseries",
+          "canonical_unit": "USD/GJ",
+          "allowed_units": ["USD/GJ", "USD/L", "USD/MMBtu", "local_currency/GJ", "local_currency/L"],
+          "description": "Delivered fuel price, including transport and applicable taxes, with a stated date and currency basis.",
+          "extraction_terms": ["diesel price", "natural gas price", "delivered fuel cost"],
+          "homer_mapping": {"component": "Fuel", "field": "price"}
+        },
+        {
+          "id": "generator.fuel_lower_heating_value",
+          "label": "Fuel lower heating value",
+          "data_type": "number",
+          "value_kind": "range",
+          "canonical_unit": "MJ/kg",
+          "allowed_units": ["MJ/kg", "MJ/L", "Btu/lb"],
+          "description": "Lower heating value used to convert physical fuel use to an energy basis.",
+          "extraction_terms": ["lower heating value", "LHV", "fuel calorific value"],
+          "homer_mapping": {"component": "Fuel", "field": "lower_heating_value"}
+        },
+        {
+          "id": "generator.co2_emissions_factor",
+          "label": "Generator carbon-dioxide emissions factor",
+          "data_type": "number",
+          "value_kind": "range",
+          "canonical_unit": "kg/kWh",
+          "allowed_units": ["kg/kWh", "g/kWh", "kg/GJ", "kg/L"],
+          "description": "Direct operational carbon-dioxide emissions factor on a clearly stated fuel or output basis.",
+          "extraction_terms": ["CO2 emissions factor", "carbon intensity", "generator emissions"],
+          "homer_mapping": {"component": "Generator", "field": "emissions_carbon_dioxide"}
+        }
+      ]
+    },
+    {
+      "id": "renewable_resources",
+      "label": "Solar PV and renewable resources",
+      "retrieval_terms": ["solar irradiance", "photovoltaic", "PV cost", "PV yield", "renewable energy", "solar generation"],
+      "parameter_defaults": {
+        "data_type": "number",
+        "value_kind": "scalar",
+        "criticality": "high",
+        "evidence_preference": ["official_resource_dataset", "measured_site_data", "academic_peer_reviewed", "vendor_quote"],
+        "validation": {"min": 0, "rule": "resource_cost_and_unit_check"}
+      },
+      "parameters": [
+        {
+          "id": "solar.ghi",
+          "label": "Global horizontal irradiance",
+          "value_kind": "timeseries",
+          "canonical_unit": "kWh/m2/hour",
+          "allowed_units": ["kWh/m2/hour", "W/m2", "kWh/m2/day"],
+          "description": "Chronological solar resource for the farm location.",
+          "extraction_terms": ["GHI", "global horizontal irradiance", "solar radiation"],
+          "homer_mapping": {"component": "Solar Resource", "field": "global_horizontal_radiation"}
+        },
+        {
+          "id": "pv.capital_cost",
+          "label": "PV installed capital cost",
+          "canonical_unit": "USD/kWdc",
+          "allowed_units": ["USD/kWdc", "local_currency/kWdc", "USD/Wdc"],
+          "description": "Turnkey installed PV cost at the specified cost year.",
+          "extraction_terms": ["PV capital cost", "installed cost", "solar CAPEX"],
+          "homer_mapping": {"component": "PV", "field": "capital_cost"}
+        },
+        {
+          "id": "pv.replacement_cost",
+          "label": "PV replacement cost",
+          "canonical_unit": "USD/kWdc",
+          "allowed_units": ["USD/kWdc", "local_currency/kWdc", "USD/Wdc"],
+          "description": "Replacement cost assigned to the PV component.",
+          "extraction_terms": ["PV replacement cost", "module replacement"],
+          "homer_mapping": {"component": "PV", "field": "replacement_cost"}
+        },
+        {
+          "id": "pv.om_cost",
+          "label": "PV annual O&M cost",
+          "canonical_unit": "USD/kWdc/year",
+          "allowed_units": ["USD/kWdc/year", "local_currency/kWdc/year", "USD/year"],
+          "description": "Annual PV operations, cleaning and maintenance cost.",
+          "extraction_terms": ["PV O&M", "cleaning cost", "maintenance cost"],
+          "homer_mapping": {"component": "PV", "field": "om_cost"}
+        },
+        {
+          "id": "pv.derating_factor",
+          "label": "PV derating factor",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "description": "Aggregate PV output derating, including GCC dust and balance-of-system losses.",
+          "extraction_terms": ["derating", "soiling loss", "dust loss", "system loss"],
+          "homer_mapping": {"component": "PV", "field": "derating_factor"}
+        },
+        {
+          "id": "pv.temperature_coefficient",
+          "label": "PV power temperature coefficient",
+          "canonical_unit": "%/degC",
+          "allowed_units": ["%/degC", "1/degC"],
+          "description": "PV maximum-power sensitivity to cell temperature.",
+          "extraction_terms": ["temperature coefficient", "Pmax coefficient"],
+          "homer_mapping": {"component": "PV", "field": "temperature_coefficient"}
+        },
+        {
+          "id": "pv.lifetime",
+          "label": "PV service life",
+          "canonical_unit": "year",
+          "allowed_units": ["year"],
+          "description": "PV project component service life.",
+          "extraction_terms": ["PV lifetime", "service life", "module life"],
+          "homer_mapping": {"component": "PV", "field": "lifetime"}
+        },
+        {
+          "id": "pv.annual_degradation",
+          "label": "PV annual degradation",
+          "canonical_unit": "%/year",
+          "allowed_units": ["%/year", "fraction/year"],
+          "description": "Annual decrease in PV output for multi-year simulation.",
+          "extraction_terms": ["PV degradation", "annual degradation"],
+          "homer_mapping": {"component": "Multi-Year PV", "field": "degradation"}
+        }
+      ]
+    },
+    {
+      "id": "storage_conversion",
+      "label": "Battery storage and power conversion",
+      "retrieval_terms": ["battery energy storage", "round-trip efficiency", "battery cost", "battery degradation", "converter efficiency", "backup storage"],
+      "parameter_defaults": {
+        "data_type": "number",
+        "value_kind": "scalar",
+        "criticality": "high",
+        "evidence_preference": ["manufacturer_datasheet", "vendor_quote", "academic_peer_reviewed", "field_measurement"],
+        "validation": {"min": 0, "rule": "technical_cost_boundary_check"}
+      },
+      "parameters": [
+        {
+          "id": "battery.nominal_energy",
+          "label": "Battery nominal energy",
+          "canonical_unit": "kWh",
+          "allowed_units": ["kWh", "MWh", "Ah"],
+          "description": "Nameplate battery energy capacity for one unit or scalable bank.",
+          "extraction_terms": ["nominal energy", "battery capacity", "kWh"],
+          "homer_mapping": {"component": "Storage", "field": "nominal_capacity"}
+        },
+        {
+          "id": "battery.nominal_power",
+          "label": "Battery nominal power",
+          "canonical_unit": "kW",
+          "allowed_units": ["kW", "MW"],
+          "description": "Continuous battery charge or discharge power rating.",
+          "extraction_terms": ["battery power", "rated power", "continuous power"],
+          "homer_mapping": {"component": "Storage", "field": "power_capacity"}
+        },
+        {
+          "id": "battery.round_trip_efficiency",
+          "label": "Battery round-trip efficiency",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "description": "DC-to-storage-to-DC efficiency at specified conditions.",
+          "extraction_terms": ["round-trip efficiency", "RTE", "battery efficiency"],
+          "homer_mapping": {"component": "Storage", "field": "round_trip_efficiency"}
+        },
+        {
+          "id": "battery.minimum_soc",
+          "label": "Minimum state of charge",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "criticality": "safety_critical",
+          "description": "Lower operational SOC boundary, including any emergency reserve policy.",
+          "extraction_terms": ["minimum SOC", "depth of discharge", "reserve SOC"],
+          "homer_mapping": {"component": "Storage", "field": "minimum_state_of_charge"}
+        },
+        {
+          "id": "battery.initial_soc",
+          "label": "Initial state of charge",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "description": "State of charge at the beginning of the simulation.",
+          "extraction_terms": ["initial SOC", "starting charge"],
+          "homer_mapping": {"component": "Storage", "field": "initial_state_of_charge"}
+        },
+        {
+          "id": "battery.lifetime_throughput",
+          "label": "Lifetime energy throughput",
+          "canonical_unit": "kWh",
+          "allowed_units": ["kWh", "MWh"],
+          "description": "Cumulative energy throughput before replacement under stated conditions.",
+          "extraction_terms": ["lifetime throughput", "cycle life", "energy throughput"],
+          "homer_mapping": {"component": "Storage", "field": "lifetime_throughput"}
+        },
+        {
+          "id": "battery.float_life",
+          "label": "Battery calendar life",
+          "canonical_unit": "year",
+          "allowed_units": ["year"],
+          "description": "Calendar or float life at specified ambient conditions.",
+          "extraction_terms": ["calendar life", "float life", "service life"],
+          "homer_mapping": {"component": "Storage", "field": "float_life"}
+        },
+        {
+          "id": "battery.capital_cost",
+          "label": "Battery installed capital cost",
+          "canonical_unit": "USD/kWh",
+          "allowed_units": ["USD/kWh", "USD/kW", "local_currency/kWh", "USD/system"],
+          "description": "Installed battery-system capital cost with explicit power/energy boundary.",
+          "extraction_terms": ["battery CAPEX", "installed cost", "BESS cost"],
+          "homer_mapping": {"component": "Storage", "field": "capital_cost"}
+        },
+        {
+          "id": "battery.replacement_cost",
+          "label": "Battery replacement cost",
+          "canonical_unit": "USD/kWh",
+          "allowed_units": ["USD/kWh", "USD/kW", "local_currency/kWh", "USD/system"],
+          "description": "Battery replacement cost at the stated future or constant-price basis.",
+          "extraction_terms": ["battery replacement cost", "replacement CAPEX"],
+          "homer_mapping": {"component": "Storage", "field": "replacement_cost"}
+        },
+        {
+          "id": "battery.om_cost",
+          "label": "Battery annual O&M cost",
+          "canonical_unit": "USD/kWh/year",
+          "allowed_units": ["USD/kWh/year", "USD/kW/year", "USD/year", "local_currency/year"],
+          "description": "Annual battery operations and maintenance cost.",
+          "extraction_terms": ["BESS O&M", "battery maintenance cost"],
+          "homer_mapping": {"component": "Storage", "field": "om_cost"}
+        },
+        {
+          "id": "converter.efficiency",
+          "label": "Converter efficiency",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "description": "Inverter or rectifier efficiency at the selected model boundary.",
+          "extraction_terms": ["inverter efficiency", "converter efficiency", "rectifier efficiency"],
+          "homer_mapping": {"component": "Converter", "field": "efficiency"}
+        },
+        {
+          "id": "converter.capital_cost",
+          "label": "Converter capital cost",
+          "canonical_unit": "USD/kW",
+          "allowed_units": ["USD/kW", "local_currency/kW", "USD/system"],
+          "description": "Installed inverter/rectifier capital cost.",
+          "extraction_terms": ["converter cost", "inverter CAPEX", "PCS cost"],
+          "homer_mapping": {"component": "Converter", "field": "capital_cost"}
+        }
+      ]
+    },
+    {
+      "id": "economics_resilience",
+      "label": "Economics, reliability and scenario controls",
+      "retrieval_terms": ["discount rate", "project lifetime", "inflation", "service outage", "critical load", "backup power", "reliability"],
+      "parameter_defaults": {
+        "data_type": "number",
+        "value_kind": "scalar",
+        "criticality": "high",
+        "evidence_preference": ["official_financial_statistics", "project_document", "academic_peer_reviewed", "measured_farm_data"],
+        "validation": {"min": 0, "rule": "scenario_and_economic_consistency"}
+      },
+      "parameters": [
+        {
+          "id": "economics.project_lifetime",
+          "label": "Project lifetime",
+          "canonical_unit": "year",
+          "allowed_units": ["year"],
+          "description": "Period over which net present cost is evaluated.",
+          "extraction_terms": ["project lifetime", "analysis period"],
+          "homer_mapping": {"component": "Economics", "field": "project_lifetime"}
+        },
+        {
+          "id": "economics.nominal_discount_rate",
+          "label": "Nominal discount rate",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "description": "Nominal rate used to discount future costs.",
+          "extraction_terms": ["nominal discount rate", "cost of capital", "WACC"],
+          "homer_mapping": {"component": "Economics", "field": "nominal_discount_rate"}
+        },
+        {
+          "id": "economics.expected_inflation",
+          "label": "Expected inflation rate",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "description": "Expected general inflation rate over the project horizon.",
+          "extraction_terms": ["inflation rate", "expected inflation"],
+          "homer_mapping": {"component": "Economics", "field": "expected_inflation_rate"}
+        },
+        {
+          "id": "resilience.critical_load_fraction",
+          "label": "Critical-load fraction",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "criticality": "safety_critical",
+          "description": "Fraction of facility demand that must be sustained during loss of grid supply.",
+          "extraction_terms": ["critical load", "essential load", "emergency load"],
+          "homer_mapping": {"type": "critical_load_scenario", "field": "critical_load_fraction"}
+        },
+        {
+          "id": "resilience.required_autonomy",
+          "label": "Required emergency autonomy",
+          "canonical_unit": "hour",
+          "allowed_units": ["hour", "day"],
+          "criticality": "safety_critical",
+          "description": "Minimum duration for which safety-critical loads must operate without grid supply.",
+          "extraction_terms": ["backup duration", "autonomy", "emergency power"],
+          "homer_mapping": {"type": "reliability_constraint", "field": "required_autonomy"}
+        },
+        {
+          "id": "resilience.maximum_annual_capacity_shortage",
+          "label": "Maximum annual capacity shortage",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "criticality": "safety_critical",
+          "description": "Permitted annual unmet electrical demand, set near zero for life-support loads.",
+          "extraction_terms": ["capacity shortage", "unmet load", "loss of load"],
+          "homer_mapping": {"component": "Constraints", "field": "maximum_annual_capacity_shortage"}
+        },
+        {
+          "id": "resilience.operating_reserve_load",
+          "label": "Operating reserve as load fraction",
+          "canonical_unit": "%",
+          "allowed_units": ["%", "fraction"],
+          "description": "Additional operating reserve required as a fraction of load.",
+          "extraction_terms": ["operating reserve", "reserve margin"],
+          "homer_mapping": {"component": "Constraints", "field": "operating_reserve_load"}
+        },
+        {
+          "id": "scenario.load_growth",
+          "label": "Annual load growth",
+          "canonical_unit": "%/year",
+          "allowed_units": ["%/year", "fraction/year"],
+          "description": "Expected change in annual farm load from production expansion or efficiency measures.",
+          "extraction_terms": ["load growth", "production expansion", "annual growth"],
+          "homer_mapping": {"component": "Multi-Year Load", "field": "annual_growth"}
+        },
+        {
+          "id": "scenario.equipment_redundancy",
+          "label": "Life-support equipment redundancy",
+          "data_type": "integer",
+          "canonical_unit": "count",
+          "allowed_units": ["count"],
+          "criticality": "safety_critical",
+          "description": "Number of redundant units or N+X redundancy applied to critical processes.",
+          "extraction_terms": ["N+1", "redundancy", "backup blower", "standby pump"],
+          "homer_mapping": {"type": "scenario_constraint", "field": "equipment_redundancy"}
+        }
+      ]
+    }
+  ]
+}

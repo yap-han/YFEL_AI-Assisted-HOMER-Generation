@@ -1,0 +1,43 @@
+{
+  "name": "Reproducible citation-chaining fixture",
+  "direction": "cited_by",
+  "seed": {
+    "title": "Energy use in Recirculating Aquaculture Systems (RAS): A review",
+    "doi": "10.1016/j.aquaeng.2018.03.003"
+  },
+  "candidates": [
+    {
+      "title": "Integration Assessment of Renewable Energy Sources and Hydrogen Technologies in Fish Farms: A Techno-Economical Model Dispatch for an Estonian Fish Farm",
+      "authors": ["Aurora García-Jiménez", "Yassine Rqiq", "Víctor Ballestín"],
+      "year": 2024,
+      "doi": "10.3390/su16177453",
+      "venue": "Sustainability",
+      "url": "https://doi.org/10.3390/su16177453",
+      "peer_reviewed": true,
+      "source_type": "academic_peer_reviewed",
+      "abstract": "HOMER Pro renewable energy, photovoltaic, hydrogen, generator and storage modelling for fish-farm electricity supply."
+    },
+    {
+      "title": "Overview of Solar Energy for Aquaculture: The Potential and Future Trends",
+      "authors": ["Thi Thu Em Vo", "Hyeyoung Ko", "Jun-Ho Huh", "Namje Park"],
+      "year": 2021,
+      "doi": "10.3390/en14216923",
+      "venue": "Energies",
+      "url": "https://doi.org/10.3390/en14216923",
+      "peer_reviewed": true,
+      "source_type": "academic_peer_reviewed",
+      "abstract": "Solar photovoltaic energy, PV cost and renewable aquaculture applications."
+    },
+    {
+      "title": "Assessing the risk of climate change to aquaculture: a national-scale case study for the Sultanate of Oman",
+      "authors": ["Georg H. Engelhard", "Ella L. Howes", "John K. Pinnegar", "Will J.F. Le Quesne"],
+      "year": 2022,
+      "doi": "10.1016/j.crm.2022.100416",
+      "venue": "Climate Risk Management",
+      "url": "https://doi.org/10.1016/j.crm.2022.100416",
+      "peer_reviewed": true,
+      "source_type": "academic_peer_reviewed",
+      "abstract": "Oman aquaculture temperature sensitivity, low oxygen hazard and climate resilience."
+    }
+  ]
+}

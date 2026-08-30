@@ -1,0 +1,104 @@
+{
+  "name": "Offline scholarly-retrieval fixture",
+  "candidates": [
+    {
+      "title": "Energy efficient cooling and heating of aquaponics facilities based on regional climate",
+      "authors": ["Ammar Alkhalidi", "Mohamad K. Khawaja", "Dana Abusubaih"],
+      "year": 2020,
+      "doi": "10.1093/ijlct/ctz053",
+      "venue": "International Journal of Low-Carbon Technologies",
+      "url": "https://doi.org/10.1093/ijlct/ctz053",
+      "peer_reviewed": true,
+      "source_type": "academic_peer_reviewed",
+      "abstract": "Aquaponics cooling and heating profiles for a Qatar facility in a hot and humid climate."
+    },
+    {
+      "title": "Assessing the risk of climate change to aquaculture: a national-scale case study for the Sultanate of Oman",
+      "authors": ["Georg H. Engelhard", "Ella L. Howes", "John K. Pinnegar", "Will J.F. Le Quesne"],
+      "year": 2022,
+      "doi": "10.1016/j.crm.2022.100416",
+      "venue": "Climate Risk Management",
+      "url": "https://doi.org/10.1016/j.crm.2022.100416",
+      "peer_reviewed": true,
+      "source_type": "academic_peer_reviewed",
+      "abstract": "Oman aquaculture temperature sensitivity, low oxygen hazard and climate resilience."
+    },
+    {
+      "title": "Integration Assessment of Renewable Energy Sources and Hydrogen Technologies in Fish Farms: A Techno-Economical Model Dispatch for an Estonian Fish Farm",
+      "authors": ["Aurora García-Jiménez", "Yassine Rqiq", "Víctor Ballestín"],
+      "year": 2024,
+      "doi": "10.3390/su16177453",
+      "venue": "Sustainability",
+      "url": "https://doi.org/10.3390/su16177453",
+      "peer_reviewed": true,
+      "source_type": "academic_peer_reviewed",
+      "abstract": "HOMER Pro renewable energy, storage and fish farm electricity load modelling."
+    },
+    {
+      "title": "Energy use in Recirculating Aquaculture Systems (RAS): A review",
+      "authors": ["Maddi Badiola", "Oihane C. Basurko", "Raul H. Piedrahita", "P. Hundley", "D. Mendiola"],
+      "year": 2018,
+      "doi": "10.1016/j.aquaeng.2018.03.003",
+      "venue": "Aquacultural Engineering",
+      "url": "https://doi.org/10.1016/j.aquaeng.2018.03.003",
+      "peer_reviewed": true,
+      "source_type": "academic_peer_reviewed",
+      "abstract": "Energy use, electricity consumption, pumping, aeration and RAS system design."
+    },
+    {
+      "title": "Overview of Solar Energy for Aquaculture: The Potential and Future Trends",
+      "authors": ["Thi Thu Em Vo", "Hyeyoung Ko", "Jun-Ho Huh", "Namje Park"],
+      "year": 2021,
+      "doi": "10.3390/en14216923",
+      "venue": "Energies",
+      "url": "https://doi.org/10.3390/en14216923",
+      "peer_reviewed": true,
+      "source_type": "academic_peer_reviewed",
+      "abstract": "Solar photovoltaic energy for aquaculture and fish farm applications."
+    },
+    {
+      "title": "Optimization of renewable energy-integrated recirculating aquaculture systems under dissolved oxygen constraints",
+      "authors": ["Akito Nakadomari", "Kodai Fukunaga", "Soichiro Ueda", "Tomonobu Senjyu"],
+      "year": 2026,
+      "doi": "10.1016/j.seta.2026.105029",
+      "venue": "Sustainable Energy Technologies and Assessments",
+      "url": "https://doi.org/10.1016/j.seta.2026.105029",
+      "peer_reviewed": true,
+      "source_type": "academic_peer_reviewed",
+      "abstract": "Renewable energy, battery storage, grid outages, aeration and dissolved oxygen limits in RAS."
+    },
+    {
+      "title": "Optimal designing of PV-diesel generator-based system using HOMER software",
+      "authors": ["Muskan", "Harpreet Kaur Channi"],
+      "year": 2023,
+      "doi": "10.1016/j.matpr.2023.01.053",
+      "venue": "Materials Today: Proceedings",
+      "url": "https://doi.org/10.1016/j.matpr.2023.01.053",
+      "peer_reviewed": true,
+      "source_type": "academic_peer_reviewed",
+      "abstract": "HOMER optimisation of a photovoltaic and diesel generator hybrid system using net present cost and energy-supply performance."
+    },
+    {
+      "title": "Fish farming in the Gulf",
+      "authors": [],
+      "year": 2026,
+      "doi": null,
+      "venue": "Wikipedia",
+      "url": "https://wikipedia.org/wiki/Fish_farming",
+      "peer_reviewed": false,
+      "source_type": "web_general",
+      "abstract": "General fish farming overview."
+    },
+    {
+      "title": "Amazing solar fish farm claim",
+      "authors": [],
+      "year": 2026,
+      "doi": null,
+      "venue": "Social media post",
+      "url": "https://facebook.com/example/solar-fish-farm",
+      "peer_reviewed": false,
+      "source_type": "web_general",
+      "abstract": "Unverified viral claim about solar energy and aquaculture."
+    }
+  ]
+}

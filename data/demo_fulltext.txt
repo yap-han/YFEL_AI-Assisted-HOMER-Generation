@@ -1,0 +1,5 @@
+SYNTHETIC DEMONSTRATION DOCUMENT — NOT RESEARCH EVIDENCE
+
+This file exists only to exercise full-text ingestion and candidate extraction.
+For the illustrative PV system, the PV capital cost was 0.82–0.95 USD/Wdc.
+The stated boundary was a turnkey installation expressed on a DC nameplate basis.

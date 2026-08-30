@@ -1,0 +1,64 @@
+{
+  "id": "gcc_fish_farm",
+  "name": "GCC fish-farm energy-system assessment",
+  "version": "0.2.0",
+  "region_search_term": "Gulf Cooperation Council GCC",
+  "locations": [
+    "Bahrain",
+    "Kuwait",
+    "Oman",
+    "Qatar",
+    "Saudi Arabia",
+    "United Arab Emirates"
+  ],
+  "domain_terms": [
+    "aquaculture",
+    "fish farm",
+    "fish farming",
+    "recirculating aquaculture",
+    "recirculating aquaculture system",
+    "RAS",
+    "aquaponics",
+    "hatchery",
+    "shrimp farm",
+    "marine farm",
+    "seabream",
+    "tilapia",
+    "pompano"
+  ],
+  "query_domain_terms": [
+    "aquaculture",
+    "fish farm",
+    "recirculating aquaculture",
+    "RAS",
+    "aquaponics",
+    "hatchery"
+  ],
+  "analogue_terms": ["arid climate", "hot climate", "hot humid climate", "Middle East"],
+  "energy_system_terms": [
+    "energy model",
+    "microgrid",
+    "hybrid energy system",
+    "renewable energy",
+    "conventional generation",
+    "diesel generator",
+    "natural gas generator"
+  ],
+  "query_templates": [
+    "{domain_clause} ({family_clause}) \"{location}\"",
+    "{domain_clause} ({family_clause}) ({analogue_clause})",
+    "{domain_clause} ({family_clause}) ({energy_clause})"
+  ],
+  "screening": {
+    "minimum_family_term_matches": 1,
+    "domain_match_required": false,
+    "title_only_allowed": true,
+    "human_review_required_for_shortlist": true
+  },
+  "adaptation_notes": [
+    "Replace domain terms to move from fish farms to another demand context.",
+    "Replace locations and the region search term for a different geography.",
+    "Keep the retrieval engine, screening schema and database unchanged.",
+    "Add or remove technology families in the ontology without changing the pipeline code."
+  ]
+}

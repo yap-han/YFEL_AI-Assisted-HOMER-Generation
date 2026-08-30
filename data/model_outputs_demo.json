@@ -1,0 +1,11 @@
+{
+  "warning": "Synthetic outputs used only to demonstrate the model-results registry; HOMER was not run.",
+  "outputs": [
+    {"metric_id": "net_present_cost", "metric_category": "economic", "value": 1250000, "unit": "USD"},
+    {"metric_id": "levelized_cost_of_energy", "metric_category": "economic", "value": 0.142, "unit": "USD/kWh"},
+    {"metric_id": "renewable_fraction", "metric_category": "energy_mix", "value": 0.64, "unit": "fraction"},
+    {"metric_id": "annual_fuel_use", "metric_category": "fuel", "value": 42000, "unit": "L/year"},
+    {"metric_id": "co2_emissions", "metric_category": "environmental", "value": 112000, "unit": "kgCO2e/year"},
+    {"metric_id": "unmet_load", "metric_category": "reliability", "value": 0, "unit": "kWh/year"}
+  ]
+}

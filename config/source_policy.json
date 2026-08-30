@@ -1,0 +1,61 @@
+{
+  "name": "Academic-first modular HOMER evidence policy",
+  "version": "0.2.0",
+  "current_year": 2026,
+  "recent_year_window": 6,
+  "quality_gate": {
+    "minimum_score": 55
+  },
+  "ranking_weights": {
+    "quality": 0.55,
+    "topical": 0.30,
+    "applicability": 0.15
+  },
+  "source_type_weights": {
+    "academic_peer_reviewed": 45,
+    "academic_other": 25,
+    "official_government": 42,
+    "official_resource_dataset": 42,
+    "technical_standard": 38,
+    "manufacturer_datasheet": 25,
+    "vendor_quote": 20,
+    "industry_report": 18,
+    "web_general": 0,
+    "unknown": 0
+  },
+  "bonuses": {
+    "peer_reviewed": 15,
+    "doi_present": 10,
+    "recent": 5
+  },
+  "relevance_gate": {
+    "minimum_family_term_matches": 1,
+    "minimum_system_term_matches": 0,
+    "hard_requirement": true,
+    "search_fields": ["title", "abstract", "venue"],
+    "rule": "A source cannot be shortlisted without a requested parameter-family match. A study-domain match improves applicability but is not mandatory because technology costs and performance evidence can transfer across demand contexts."
+  },
+  "penalties": {
+    "blocked_domain": 100,
+    "general_web": 30
+  },
+  "blocked_domains": [
+    "wikipedia.org",
+    "facebook.com",
+    "linkedin.com",
+    "pinterest.com",
+    "scribd.com"
+  ],
+  "rules": [
+    "Use DOI or publisher metadata as the canonical identity for academic sources.",
+    "Do not treat ResearchGate or Academia.edu as the canonical source record.",
+    "Apply source quality and topical relevance as separate gates.",
+    "Treat geographic and application-context relevance as ranking factors only after topical relevance passes.",
+    "Preserve every provider, database name, query and retrieval date when duplicates are merged.",
+    "Prefer GCC-specific evidence; otherwise label transferability as climate_analogue or global.",
+    "Use official regulator or utility sources for tariffs even when academic sources exist.",
+    "Use measured farm data ahead of literature for chronological load profiles.",
+    "Do not accept AI-generated citations unless verified through Crossref, OpenAlex, a publisher, or an institutional repository.",
+    "Shortlisting is not human approval for model use."
+  ]
+}

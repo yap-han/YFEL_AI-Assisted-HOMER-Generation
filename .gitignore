@@ -1,0 +1,22 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+.venv/
+venv/
+
+# Generated databases, reports and packages
+output/
+*.sqlite
+*.sqlite-journal
+*.zip
+
+# Full texts are normally obtained independently by each collaborator.
+evidence/fulltexts/*
+!evidence/fulltexts/.gitkeep
+real_pilot/fulltexts/
+real_pilot/output/
+
+.DS_Store
+Thumbs.db

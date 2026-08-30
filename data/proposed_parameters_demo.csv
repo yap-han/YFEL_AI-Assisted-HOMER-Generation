@@ -1,0 +1,4 @@
+parameter_id,scenario_id,context_location,technology,proposed_value,proposed_unit,system_boundary,source_basis,criticality,entered_by,notes
+pv.capital_cost,oman_demo,Oman,PV,900,USD/kWdc,"Turnkey installed PV, DC nameplate","Researcher preliminary database",medium,demo_researcher,"SYNTHETIC DEMONSTRATION VALUE"
+generator.capital_cost,oman_demo,Oman,Diesel generator,500,USD/kW,"Installed generator, AC nameplate","Researcher preliminary database",medium,demo_researcher,"SYNTHETIC DEMONSTRATION VALUE"
+battery.round_trip_efficiency,oman_demo,Oman,Lithium-ion battery,90,%,"Battery DC-to-DC boundary","Researcher preliminary database",high,demo_researcher,"SYNTHETIC DEMONSTRATION VALUE"
