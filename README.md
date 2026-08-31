@@ -1,8 +1,49 @@
-# Modular energy-mix evidence prototype — v0.5
+# Modular energy-mix evidence prototype — v0.6
 
 This runnable Python prototype supports a controlled workflow for rapidly assessing renewable, grid, storage and dispatchable conventional generation with HOMER or another optimisation model. The supplied application is a GCC fish farm, but the context profile, parameter ontology, evidence policy, validation engine and model registry are separate modules so the method can be reused for other locations and facilities.
 
-Version 0.5 adds configurable OpenAI-compatible LLM extraction, batch submission of ingested documents, strict quotation/location validation, ontology-constrained JSON validation and bounded retries that preserve the original evidence task. It retains the complete path from a researcher-defined parameter table to validated scenario inputs and linked model results.
+Version 0.6 adds a strict live route for the 22-paper pilot: Mistral OCR 4.1 extracts page structure and tables, GPT-5.6 Luna screens page-preserving chunks, and GPT-5.6 Terra extracts ontology-constrained quantitative observations. The route has no fixture fallback. It pauses when credentials, original PDFs, manual observation review, or real HOMER result exports are unavailable.
+
+## v0.6 live pipeline
+
+The publication-oriented command is:
+
+```bash
+PYTHONPATH=src python -m homer_gcc run-advanced-pipeline \
+  --config config/advanced_pipeline.example.json \
+  --reset
+```
+
+It implements eight gated stages:
+
+1. OCR and table extraction from all 22 original PDFs.
+2. Chunk-level parameter relevance screening with `gpt-5.6-luna`.
+3. Quantitative extraction with `gpt-5.6-terra` and Structured Outputs.
+4. Deterministic ontology, unit, quotation, page and locator validation with unchanged-evidence retries.
+5. A generated manual-review sample and measured numerical, semantic, quotation and boundary correctness.
+6. Aggregation only within an explicit component/system boundary.
+7. Coverage of 32 inputs/decisions required for a minimum PV–diesel–battery–grid HOMER scenario, distinguishing literature, site-data and researcher-assumption roles.
+8. A direct comparison of baseline and evidence-updated HOMER architecture rankings to test whether the preferred renewable–conventional mix changes.
+
+Before running, place the 22 lawfully obtained PDFs under `evidence/pdfs/` using the filenames in `evidence/corpus_manifest.22.example.json`, then set provider keys in the shell:
+
+```bash
+export OPENAI_API_KEY="your-openai-api-key"
+export MISTRAL_API_KEY="your-mistral-api-key"
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:OPENAI_API_KEY="your-openai-api-key"
+$env:MISTRAL_API_KEY="your-mistral-api-key"
+$env:PYTHONPATH="src"
+python -m homer_gcc run-advanced-pipeline --config config/advanced_pipeline.example.json --reset
+```
+
+The first successful LLM pass writes `output/advanced_pipeline/HUMAN_REVIEW.csv` and exits with status 3. A researcher must fill every sampled row with a named reviewer and `yes`/`no` judgements, then rerun without deleting provider caches. After review and aggregation, export the baseline and updated HOMER architecture results using `evidence/homer_results/example.schema.json`. The next rerun calculates `energy_mix_impact.json`.
+
+Every provider call records model, operation, prompt version, immutable evidence hash, token usage, latency, configured pricing snapshot and estimated API cost in `output/advanced_pipeline/telemetry.json`.
 
 ## What the prototype now does
 
@@ -10,8 +51,8 @@ Version 0.5 adds configurable OpenAI-compatible LLM extraction, batch submission
 |---|---|---|
 | Define | Stores proposed parameter values by scenario, technology and location | Researcher defines the required model inputs and initial values |
 | Retrieve | Searches, deduplicates, ranks and screens academic evidence | Reviewer includes papers after title, abstract and full-text checks |
-| Ingest | Registers and batch-ingests a versioned TXT, Markdown, JSON or PDF corpus | Rights notes and completeness gates are required by the configured workflow |
-| Extract | Batch-submits schema-constrained tasks to a configured LLM or runs transparent regex triage | AI or regex output is always a candidate |
+| Ingest | Registers and batch-ingests a versioned corpus; the v0.6 route uses OCR 4.1 page, block and table output | Rights notes, original PDFs and completeness gates are required |
+| Extract | Luna screens relevant chunks; Terra extracts schema-constrained quantitative observations | AI output is always a candidate |
 | Normalize | Converts approved units, currencies and cost years with deterministic rules | Currency rates and escalation assumptions must be supplied explicitly |
 | Validate | Compares proposals with a low/base/high evidence envelope | Candidate evidence is excluded by default |
 | Approve | Records approve, reject or modify decisions with reviewer identity and notes | No parameter enters a model scenario before this gate |
@@ -41,7 +82,7 @@ PYTHONPATH=src python -m homer_gcc quant-demo
 
 The demonstration exercises the seven quantitative modules, but every numerical evidence record and model output is explicitly synthetic. It is a software test, not a fish-farm result and not citable evidence.
 
-Run all tests:
+Run all tests (28 tests in v0.6):
 
 ```bash
 PYTHONPATH=src python -m unittest discover -s tests -v
@@ -220,7 +261,7 @@ The prototype exports approved tabular inputs and registers results. It does not
 - `prototype_summary.json`
 
 See `docs/METHODOLOGY.md` for the research protocol,
-`docs/IMPLEMENTED_CHANGES_V0.4.md` for the ingestion-workflow changes and
+`docs/IMPLEMENTED_CHANGES_V0.6.md` for the live-pipeline changes and
 `docs/ADAPTATION_GUIDE.md` for reuse outside GCC aquaculture.
 
 ## Reproduce the 22-paper real-evidence pilot
@@ -246,7 +287,7 @@ Results are written to `real_pilot/output/`, including:
 - `corpus_manifest.json`
 - deterministic-extraction benchmark and complete audit exports
 
-The full texts and generated pilot database are excluded from Git by default;
+The full texts, PDFs and generated pilot database are excluded from Git by default;
 collaborators should obtain lawful copies independently. The recalculated values
 are exploratory. All ten usable observations remain at
 `candidate` status and the two ambiguous observations remain

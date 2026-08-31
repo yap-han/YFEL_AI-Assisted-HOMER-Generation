@@ -1,0 +1,13 @@
+{
+  "scenario_id": "replace_with_homer_scenario_id",
+  "architectures": [
+    {
+      "architecture_id": "pv-diesel-battery-grid",
+      "npc_usd": 0,
+      "renewable_fraction": 0,
+      "pv_kw": 0,
+      "generator_kw": 0,
+      "battery_kwh": 0
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": "2.0",
+  "database": "../output/advanced_pipeline/evidence.sqlite",
+  "output_dir": "../output/advanced_pipeline",
+  "context": {
+    "ontology": "ontology.json",
+    "profile": "study_profile.json"
+  },
+  "corpus": {
+    "manifest": "../evidence/corpus_manifest.22.example.json",
+    "pdf_root": "../evidence/pdfs",
+    "expected_documents": 22
+  },
+  "ocr": {
+    "provider": "mistral_ocr",
+    "model": "mistral-ocr-4-1",
+    "endpoint": "https://api.mistral.ai/v1/ocr",
+    "api_key_env": "MISTRAL_API_KEY",
+    "timeout_seconds": 300,
+    "price_usd_per_1000_pages": 4.0,
+    "pricing_source_date": "2026-08-31"
+  },
+  "chunking": {
+    "max_characters": 6000,
+    "overlap_characters": 600
+  },
+  "screening": {
+    "provider": "openai_responses",
+    "model": "gpt-5.6-luna",
+    "endpoint": "https://api.openai.com/v1/responses",
+    "api_key_env": "OPENAI_API_KEY",
+    "reasoning_effort": "low",
+    "relevance_threshold": 0.65,
+    "timeout_seconds": 180,
+    "pricing_usd_per_million_tokens": {
+      "input": 0.2,
+      "cached_input": 0.02,
+      "output": 1.2
+    },
+    "pricing_source_date": "2026-08-31"
+  },
+  "extraction": {
+    "provider": "openai_responses",
+    "model": "gpt-5.6-terra",
+    "endpoint": "https://api.openai.com/v1/responses",
+    "api_key_env": "OPENAI_API_KEY",
+    "reasoning_effort": "medium",
+    "timeout_seconds": 240,
+    "pricing_usd_per_million_tokens": {
+      "input": 2.0,
+      "cached_input": 0.2,
+      "output": 12.0
+    },
+    "pricing_source_date": "2026-08-31"
+  },
+  "max_retries": 2,
+  "normalization": {
+    "target_cost_year": 2026,
+    "annual_escalation_rate": 0.02
+  },
+  "scenario_requirements": "minimum_homer_scenario.json",
+  "boundary_taxonomy": "system_boundary_taxonomy.json",
+  "human_review": {
+    "sample_size": 30,
+    "file": "../output/advanced_pipeline/HUMAN_REVIEW.csv"
+  },
+  "mix_impact": {
+    "baseline_results": "../evidence/homer_results/baseline.json",
+    "provisional_results": "../evidence/homer_results/evidence_updated.json"
+  }
+}

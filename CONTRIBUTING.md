@@ -24,6 +24,8 @@ ability to adapt the workflow to another location or energy system.
 PYTHONPATH=src python -m unittest discover -s tests -v
 PYTHONPATH=src python -m homer_gcc run-workflow \
   --config config/workflow.example.json
+PYTHONPATH=src python -m homer_gcc run-advanced-pipeline \
+  --config config/advanced_pipeline.example.json
 ```
 
 Use `--reset` only for disposable databases. Normal reruns preserve the database,
@@ -37,6 +39,10 @@ deduplicate documents by SHA-256 and skip duplicate observation imports.
 - [ ] Raw values, units and source locators are preserved.
 - [ ] Normalization assumptions are explicit.
 - [ ] Candidate evidence has not been represented as human-approved.
+- [ ] `HUMAN_REVIEW.csv` contains named, genuinely manual judgements; it was not completed by an LLM.
+- [ ] Evidence was aggregated only within a compatible system boundary.
+- [ ] Provider telemetry records the model, prompt version, tokens, latency and pricing snapshot.
+- [ ] HOMER impact claims come from baseline and evidence-updated HOMER exports, not the synthetic example.
 - [ ] New behavior has automated tests.
 - [ ] Documentation remains applicable outside the GCC fish-farm case.
 

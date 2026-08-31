@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "default": {
+    "project_assumption": ["project assumption", "study assumption", "project lifetime"],
+    "point_of_connection": ["point of connection", "utility meter", "grid connection"],
+    "site_resource": ["site resource", "meteorological", "weather station"],
+    "farm_ac_bus": ["farm ac", "primary load", "ac load bus"]
+  },
+  "parameters": {
+    "pv.capital_cost": {
+      "pv_turnkey_dc": ["turnkey", "total installed", "installed pv", "dc nameplate", "balance of system"],
+      "pv_module_only": ["module only", "module price", "panel only"],
+      "homer_input_unspecified": ["homer input", "capital input", "component cost"]
+    },
+    "pv.replacement_cost": {
+      "pv_turnkey_dc": ["turnkey", "total installed", "replacement pv", "dc nameplate"]
+    },
+    "pv.om_cost": {
+      "pv_turnkey_dc": ["installed pv", "pv system", "dc nameplate", "array operation"]
+    },
+    "pv.derating_factor": {
+      "pv_array_dc": ["pv array", "dc output", "derating factor"]
+    },
+    "pv.lifetime": {
+      "pv_array_dc": ["pv array", "module lifetime", "service life"]
+    },
+    "generator.capital_cost": {
+      "generator_installed_ac": ["installed generator", "genset installed", "ac nameplate", "generator system"],
+      "homer_input_unspecified": ["homer input", "generator capital input", "component cost"]
+    },
+    "generator.replacement_cost": {
+      "generator_installed_ac": ["installed generator", "genset replacement", "ac nameplate"]
+    },
+    "generator.om_cost": {
+      "generator_installed_ac": ["generator o&m", "genset operation", "operating hour"]
+    },
+    "generator.electrical_efficiency": {
+      "generator_ac_output": ["electrical efficiency", "ac output", "net electrical"]
+    },
+    "generator.operating_lifetime": {
+      "generator_unit": ["operating lifetime", "generator lifetime", "engine hours"]
+    },
+    "fuel.generator_minimum_load": {
+      "generator_unit": ["minimum load", "minimum loading", "genset load ratio"]
+    },
+    "battery.capital_cost": {
+      "battery_pack_dc": ["battery pack", "dc battery", "storage pack", "battery-only"],
+      "battery_system_ac": ["ac-coupled", "battery system", "power conversion included"],
+      "battery_cell": ["cell-level", "battery cell"]
+    },
+    "battery.replacement_cost": {
+      "battery_pack_dc": ["battery pack", "dc battery", "storage pack"]
+    },
+    "battery.om_cost": {
+      "battery_pack_dc": ["battery pack", "dc battery", "storage pack"]
+    },
+    "battery.round_trip_efficiency": {
+      "battery_pack_dc": ["pack dc", "battery pack", "dc-to-dc", "stationary pack"],
+      "battery_system_ac": ["ac-to-ac", "ac coupled", "system-level"],
+      "battery_cell": ["cell-level", "battery cell"]
+    },
+    "battery.minimum_soc": {
+      "battery_pack_dc": ["battery pack", "minimum state of charge", "dc battery"]
+    },
+    "battery.float_life": {
+      "battery_pack_dc": ["battery pack", "calendar life", "float life"]
+    },
+    "converter.efficiency": {
+      "converter_ac_dc": ["converter", "inverter", "ac/dc", "dc/ac"]
+    },
+    "converter.capital_cost": {
+      "converter_ac_dc": ["converter", "inverter", "ac/dc", "dc/ac"]
+    }
+  }
+}

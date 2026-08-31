@@ -58,9 +58,11 @@ For every parameter family and location:
 
 Academic-first does not mean academic-only. Government resource data, tariffs, fuel prices, manufacturer specifications and local quotations can be more authoritative for particular fields, but must enter through documented source classes.
 
-### Phase D — Ingest full text and extract evidence
+### Phase D — OCR, chunk, screen and extract evidence
 
-The ingestion layer stores a document checksum, metadata, text pages and locators. It accepts text, Markdown and structured JSON directly and uses `pdftotext` when available for PDFs.
+The v0.6 research route requires original, lawfully obtained PDFs. Mistral OCR 4.1 returns page Markdown, structured tables, block labels, bounding-box information and confidence data. Raw OCR responses and PDF checksums are cached so a rerun can be audited without changing the evidence.
+
+Each OCR page is divided into overlapping, page-preserving chunks. GPT-5.6 Luna screens those chunks for explicit quantitative evidence against the selected ontology fields. Only chunks above the configured relevance threshold enter GPT-5.6 Terra extraction. Screening and extraction therefore remain replaceable modules with separate prompts, schemas and telemetry.
 
 An AI extraction task uses a rigid schema and requires the model to:
 
@@ -71,7 +73,7 @@ An AI extraction task uses a rigid schema and requires the model to:
 - Capture technology, geography, scale, operating conditions and boundary
 - Avoid averaging, normalization and source reconciliation
 
-The software provides a configurable OpenAI-compatible connector and a transparent regex extractor for pre-screening and testing. The LLM route batch-submits ingested documents, requires verbatim quotations and detailed locations, validates the response against requested ontology fields and units, and retries malformed responses with the same immutable evidence-task hash. Neither mechanism approves evidence. Extracted observations remain candidates until a reviewer checks them against the source.
+The Responses API route uses strict JSON Schema output, requires verbatim quotations and detailed locations, validates the response against requested ontology fields and units, and retries malformed responses while retaining the same immutable evidence hash. Every call records the provider, exact model, prompt version, input/output/cached tokens, latency, configured price snapshot and estimated cost. Neither model approves evidence. Extracted observations remain candidates until a reviewer checks them against the source.
 
 ### Phase E — Normalize deterministically
 
@@ -81,15 +83,15 @@ The system refuses unsupported or dimensionally incompatible conversions. It als
 
 ### Phase F — Validate quantitative proposals
 
-For parameter \(i\), approved observations form an evidence envelope:
+For parameter \(i\) and compatible system boundary \(b\), approved observations form an evidence envelope:
 
 \[
-L_i=\min_j(l_{ij}),\qquad
-B_i=\operatorname{median}_j(b_{ij}),\qquad
-H_i=\max_j(h_{ij})
+L_{ib}=\min_j(l_{ijb}),\qquad
+B_{ib}=\operatorname{median}_j(b_{ijb}),\qquad
+H_{ib}=\max_j(h_{ijb})
 \]
 
-The proposed normalized value \(P_i\) is classified as below, within or above \([L_i,H_i]\). The algorithm also checks:
+The proposed normalized value \(P_i\) is classified as below, within or above the envelope for its declared boundary. Cell, pack, complete BESS, module-only, turnkey and AC/DC records are never pooled merely because they share a parameter name. The algorithm also checks:
 
 - Number of independent sources
 - Number of human-approved observations
@@ -120,7 +122,9 @@ Validation remains pending until a named reviewer chooses:
 
 Candidate AI evidence cannot directly support an approved scenario. Values failing physical checks cannot be approved. Published base cases require 100% human approval; safety-critical or architecture-changing parameters should receive independent expert review.
 
-### Phase H — Run and register the model
+### Phase H — Complete the minimum scenario, run and register the model
+
+The supplied minimum scenario contract contains 32 required inputs or decisions. It explicitly separates literature-supported technology fields from site-specific load, solar, tariff, outage and fuel data, plus researcher-set modelling constraints. A literature database alone therefore cannot be misrepresented as a complete site model.
 
 The approved scenario export contains low, base, high and selected values. Before a model run, the registry freezes the selected inputs and creates a SHA-256 checksum. Imported outputs remain linked to that exact snapshot.
 
@@ -128,7 +132,7 @@ Recommended outputs include net present cost, levelized cost of energy, renewabl
 
 ### Phase I — Assess robustness and update the living database
 
-Run low/base/high and additional sensitivity cases for fuel price, tariffs, technology cost, degradation, demand, outages, discount rate and reliability constraints. Report whether the preferred portfolio changes and identify the parameters responsible.
+Run low/base/high and additional sensitivity cases for fuel price, tariffs, technology cost, degradation, demand, outages, discount rate and reliability constraints. The v0.6 impact step reads independently exported baseline and evidence-updated HOMER architecture rankings, compares their minimum-NPC portfolios and reports whether the preferred mix changes. It deliberately does not substitute a synthetic or surrogate optimiser for HOMER.
 
 When new evidence appears, add new observations and validations without overwriting prior model-run snapshots. This makes the method suitable for living updates and rapid reassessment.
 
@@ -148,9 +152,10 @@ The AI prototype is therefore sufficient to assist the proposed workflow, but no
 ## Current limits
 
 - The included numerical fixtures are synthetic and cannot support a research conclusion.
-- The package can call an OpenAI-compatible LLM service configured by model, endpoint and environment-variable credential. No model or API key is bundled.
-- Without an independently human-labelled gold-standard dataset, operational yield and value ranges may be reported, but extraction accuracy, precision and recall must not be claimed.
-- PDF extraction depends on locally available `pdftotext`; tables may still require manual or specialized parsing.
+- The v0.6 route requires separate OpenAI and Mistral API credentials, provider billing/access, and all 22 original PDFs. No key or paper is bundled.
+- Accuracy is reported only after a named human completes the generated observation-review sample. An unreviewed run may report yield, range and telemetry, but not correctness.
+- Mistral OCR provides structured tables and blocks, but low-confidence or layout-sensitive records still require checking against the rendered PDF.
+- The pipeline stops before aggregation when manual review is absent, and before the impact conclusion when real HOMER exports are absent.
 - Exact retrieval relevance is transparent but metadata can be incomplete.
 - The validation envelope does not replace formal meta-analysis where study designs justify one.
 - Native HOMER project generation and automated HOMER execution are outside the current prototype.

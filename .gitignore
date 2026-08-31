@@ -15,6 +15,10 @@ output/
 # Full texts are normally obtained independently by each collaborator.
 evidence/fulltexts/*
 !evidence/fulltexts/.gitkeep
+evidence/pdfs/*
+!evidence/pdfs/.gitkeep
+evidence/homer_results/*.json
+!evidence/homer_results/example.schema.json
 real_pilot/fulltexts/
 real_pilot/output/
 

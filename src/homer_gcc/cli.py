@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from . import db
+from .advanced_pipeline import PipelineStopped, run_advanced_pipeline
 from .evidence import build_ai_extraction_task, extract_numeric_candidates, read_document
 from .ingestion import ingest_corpus
 from .llm import run_llm_extraction_batch
@@ -446,6 +447,27 @@ def command_run_workflow(args: argparse.Namespace) -> int:
     )
     print(json.dumps(result, indent=2, ensure_ascii=False))
     return 0 if args.allow_partial or result["status"] == "completed" else 1
+
+
+def command_run_advanced_pipeline(args: argparse.Namespace) -> int:
+    try:
+        result = run_advanced_pipeline(args.config, reset=args.reset)
+    except PipelineStopped as exc:
+        print(
+            json.dumps(
+                {
+                    "status": exc.status,
+                    "message": str(exc),
+                    "report": str(exc.report),
+                    "fixture_fallback_used": False,
+                },
+                indent=2,
+                ensure_ascii=False,
+            )
+        )
+        return 3
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    return 0
 
 
 def command_make_extraction_task(args: argparse.Namespace) -> int:
@@ -951,6 +973,18 @@ def parser() -> argparse.ArgumentParser:
     )
     workflow_parser.add_argument("--allow-partial", action="store_true")
     workflow_parser.set_defaults(function=command_run_workflow)
+
+    advanced = sub.add_parser(
+        "run-advanced-pipeline",
+        help="Run strict OCR -> Luna screen -> Terra extraction -> review -> HOMER impact workflow",
+    )
+    advanced.add_argument("--config", required=True, help="Version 2.0 advanced-pipeline JSON config")
+    advanced.add_argument(
+        "--reset",
+        action="store_true",
+        help="Delete only the configured generated database before running; provider caches are retained",
+    )
+    advanced.set_defaults(function=command_run_advanced_pipeline)
 
     task = sub.add_parser("make-extraction-task", help="Create a strict JSON task for an external AI extractor")
     task.add_argument("--db", default=PROJECT_ROOT / "output" / "prototype.sqlite")
