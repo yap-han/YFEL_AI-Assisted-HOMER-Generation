@@ -1,0 +1,51 @@
+{
+  "description": "Offline scripted responses used to test rejection and retry. These are not model results.",
+  "documents": [
+    {
+      "document_id": 1,
+      "responses": [
+        {
+          "observations": [
+            {
+              "parameter_id": "pv.capital_cost",
+              "raw_value_min": 0.82,
+              "raw_value_central": 0.885,
+              "raw_value_max": 0.95,
+              "raw_unit": "USD/Wdc",
+              "raw_value_text": "0.82–0.95 USD/Wdc",
+              "page_number": 1,
+              "locator": "page 1, line 4",
+              "extraction_confidence": 0.9
+            }
+          ]
+        },
+        {
+          "observations": [
+            {
+              "parameter_id": "pv.capital_cost",
+              "raw_value_min": 0.82,
+              "raw_value_central": 0.885,
+              "raw_value_max": 0.95,
+              "raw_unit": "USD/Wdc",
+              "raw_value_text": "0.82–0.95 USD/Wdc",
+              "evidence_quote": "For the illustrative PV system, the PV capital cost was 0.82–0.95 USD/Wdc.",
+              "page_number": 1,
+              "table_id": null,
+              "figure_id": null,
+              "locator": "page 1, line 4",
+              "technology": "PV",
+              "system_boundary": "turnkey installation on a DC nameplate basis",
+              "context_location": null,
+              "scale": null,
+              "operating_conditions": null,
+              "currency": "USD",
+              "source_cost_year": null,
+              "extraction_confidence": 0.9,
+              "applicability_score": 0.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -154,6 +154,26 @@ def build_ai_extraction_task(
     pages: list[dict[str, Any]],
     parameters: list[dict[str, Any]],
 ) -> dict[str, Any]:
+    parameter_contracts = [
+        {
+            "parameter_id": parameter["id"],
+            "label": parameter["label"],
+            "description": parameter.get("description"),
+            "canonical_unit": parameter.get("canonical_unit"),
+            "allowed_units": parameter.get("allowed_units", []),
+            "extraction_terms": parameter.get("extraction_terms", []),
+        }
+        for parameter in parameters
+    ]
+    parameter_ids = [item["parameter_id"] for item in parameter_contracts]
+    allowed_units = sorted(
+        {
+            str(unit)
+            for item in parameter_contracts
+            for unit in [item.get("canonical_unit"), *item.get("allowed_units", [])]
+            if unit
+        }
+    )
     return {
         "task": "extract_quantitative_parameter_evidence",
         "document_id": document_id,
@@ -162,41 +182,54 @@ def build_ai_extraction_task(
             "Extract only explicitly reported numerical evidence.",
             "Return null when a field is absent; never infer or calculate an unreported value.",
             "Preserve raw values and units exactly as written.",
-            "Provide a page and table, figure or line locator for every observation.",
+            "Copy a short verbatim evidence_quote containing the reported number for every observation.",
+            "Provide the page number and a table, figure, section, paragraph or line locator for every observation.",
+            "The raw_value_text must appear inside evidence_quote, and evidence_quote must appear on the cited page.",
             "Capture technology, system boundary, geography, scale and operating conditions.",
             "Do not normalize units or reconcile sources.",
         ],
-        "parameters": [
-            {
-                "parameter_id": parameter["id"],
-                "label": parameter["label"],
-                "description": parameter.get("description"),
-                "allowed_units": parameter.get("allowed_units", []),
-                "extraction_terms": parameter.get("extraction_terms", []),
-            }
-            for parameter in parameters
-        ],
+        "parameters": parameter_contracts,
         "output_schema": {
-            "observations": [
-                {
-                    "parameter_id": "string",
-                    "raw_value_min": "number|null",
-                    "raw_value_central": "number",
-                    "raw_value_max": "number|null",
-                    "raw_unit": "string",
-                    "raw_value_text": "string",
-                    "page_number": "integer",
-                    "table_id": "string|null",
-                    "figure_id": "string|null",
-                    "locator": "string",
-                    "technology": "string|null",
-                    "system_boundary": "string|null",
-                    "context_location": "string|null",
-                    "scale": "string|null",
-                    "operating_conditions": "string|null",
-                    "extraction_confidence": "number_0_to_1",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["observations"],
+            "properties": {
+                "observations": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": [
+                            "parameter_id", "raw_value_central", "raw_unit",
+                            "raw_value_text", "evidence_quote", "page_number",
+                            "locator", "extraction_confidence",
+                        ],
+                        "properties": {
+                            "parameter_id": {"type": "string", "enum": parameter_ids},
+                            "raw_value_min": {"type": ["number", "null"]},
+                            "raw_value_central": {"type": "number"},
+                            "raw_value_max": {"type": ["number", "null"]},
+                            "raw_unit": {"type": "string", "enum": allowed_units},
+                            "raw_value_text": {"type": "string", "minLength": 1},
+                            "evidence_quote": {"type": "string", "minLength": 1},
+                            "page_number": {"type": "integer", "minimum": 1},
+                            "table_id": {"type": ["string", "null"]},
+                            "figure_id": {"type": ["string", "null"]},
+                            "locator": {"type": "string", "minLength": 1},
+                            "technology": {"type": ["string", "null"]},
+                            "system_boundary": {"type": ["string", "null"]},
+                            "context_location": {"type": ["string", "null"]},
+                            "scale": {"type": ["string", "null"]},
+                            "operating_conditions": {"type": ["string", "null"]},
+                            "currency": {"type": ["string", "null"]},
+                            "source_cost_year": {"type": ["integer", "null"]},
+                            "extraction_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+                            "applicability_score": {"type": "number", "minimum": 0, "maximum": 1},
+                        },
+                    },
                 }
-            ]
+            },
         },
         "pages": pages,
     }

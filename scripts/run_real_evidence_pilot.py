@@ -261,12 +261,12 @@ def deterministic_benchmark(db_path: Path, document_ids: dict[str, int], fulltex
             definition = db.get_parameter_definition(db_path, parameter_id)
             candidates = extract_numeric_candidates(document["pages"], definition)
             total_candidates += len(candidates)
-            gold = expected.get((source["id"], parameter_id), [])
+            reference_candidates = expected.get((source["id"], parameter_id), [])
             detected = False
-            if gold:
+            if reference_candidates:
                 expected_numbers = {
                     float(value)
-                    for item in gold
+                    for item in reference_candidates
                     for value in (item["raw_value_min"], item["raw_value_central"], item["raw_value_max"])
                 }
                 detected = any(
@@ -278,15 +278,17 @@ def deterministic_benchmark(db_path: Path, document_ids: dict[str, int], fulltex
             pair_rows.append({
                 "source_id": source["id"], "document_id": document_ids[source["id"]],
                 "parameter_id": parameter_id, "candidate_count": len(candidates),
-                "gold_pair": bool(gold), "gold_numeric_detected": detected,
+                "curated_candidate_pair": bool(reference_candidates),
+                "curated_candidate_numeric_detected": detected,
             })
-    gold_pair_count = len(expected)
+    candidate_pair_count = len(expected)
     return {
         "document_parameter_pairs": len(pair_rows),
         "deterministic_candidates": total_candidates,
-        "gold_document_parameter_pairs": gold_pair_count,
-        "gold_numeric_detected_pairs": expected_pairs_detected,
-        "gold_pair_recall": expected_pairs_detected / gold_pair_count if gold_pair_count else 0,
+        "curated_candidate_document_parameter_pairs": candidate_pair_count,
+        "curated_candidate_numeric_detected_pairs": expected_pairs_detected,
+        "candidate_pair_detection_rate": expected_pairs_detected / candidate_pair_count if candidate_pair_count else 0,
+        "accuracy_status": "not_measured_no_human_gold_standard",
         "pair_results": pair_rows,
     }
 
@@ -298,7 +300,7 @@ def write_markdown(path: Path, metrics: dict, validations: list[dict]) -> None:
         "",
         "## Scope and status",
         "",
-        "This run ingests real open-access academic full texts and recalculates exploratory evidence envelopes for three HOMER parameters. The observations remain **candidate evidence** because no human domain reviewer has approved them. Consequently, no value is promoted to the model-ready scenario table.",
+        "This run ingests real open-access academic full texts and recalculates exploratory evidence envelopes for three HOMER parameters. Its source-checked candidate observations predate the configurable v0.5 LLM connector and therefore provide a corpus/yield baseline, not a live-model benchmark. The observations remain **candidate evidence** because no human domain reviewer has approved them. Consequently, no value is promoted to the model-ready scenario table.",
         "",
         "## Corpus and ingestion",
         "",
@@ -313,7 +315,7 @@ def write_markdown(path: Path, metrics: dict, validations: list[dict]) -> None:
         "",
         "Cost records were harmonized to 2025 USD with an explicit 2% annual escalation assumption; the 2020 Hong Kong study value uses its stated cost year and other records use the publication year as a provisional proxy. The recalculated central value is the unweighted median of source central estimates, while the envelope is the minimum low to maximum high. These assumptions are transparent and should be replaced by a reviewer-approved cost index and boundary-specific subset before publication.",
         "",
-        "| Parameter | Initial value | Candidate evidence | Recalculated central | Evidence envelope | Decision |",
+        "| Parameter | Initial value | Candidate evidence | Provisional selected value | Evidence envelope | Decision |",
         "|---|---:|---:|---:|---:|---|",
     ]
     for parameter_id, initial in (("pv.capital_cost", 900), ("generator.capital_cost", 500), ("battery.round_trip_efficiency", 90)):
@@ -329,15 +331,24 @@ def write_markdown(path: Path, metrics: dict, validations: list[dict]) -> None:
         "",
         "The generator evidence meets the minimum count of two independent sources but is still candidate-only and only moderately transferable to Oman. The battery evidence is stronger in count, but mixes cell, pack, and generic technology boundaries; the 90% initial value remains inside the observed envelope.",
         "",
+        "### Why each provisional value was selected",
+        "",
+        "For every parameter, the prototype selects the unweighted median of candidate source central estimates. This rule is reproducible and less sensitive to one extreme source than the arithmetic mean. The minimum low and maximum high are retained as the evidence envelope rather than being hidden by the central estimate.",
+        "",
+        "- `pv.capital_cost`: 1553.95 USD/kWdc is the candidate median, but the 670.03-3703.09 USD/kWdc envelope is conflict-flagged because sources mix utility, rooftop, residential and generic HOMER boundaries. It is not suitable as a final model input without boundary filtering.",
+        "- `generator.capital_cost`: 595.93 USD/kW is the median of two candidate sources. It is retained provisionally because both values fall within a much narrower 500.00-691.87 USD/kW envelope, although GCC applicability still requires review.",
+        "- `battery.round_trip_efficiency`: 91.25% is the median of four candidate sources and sits within an 85-95% envelope. It is the most stable of the three provisional selections, but cell, pack and system-level boundaries must still be separated.",
+        "",
         "## Extraction effectiveness",
         "",
         f"- Source-checked usable observations: {metrics['usable_observations']}",
         f"- Flagged/excluded observations: {metrics['flagged_observations']}",
         f"- Parameters covered: {metrics['parameters_covered']}/3",
         f"- Deterministic regex candidates generated: {metrics['deterministic_candidates']}",
-        f"- Gold document-parameter pairs numerically detected by regex: {metrics['gold_numeric_detected_pairs']}/{metrics['gold_document_parameter_pairs']} ({metrics['gold_pair_recall']:.1%})",
+        f"- Curated candidate document-parameter pairs numerically detected by regex: {metrics['curated_candidate_numeric_detected_pairs']}/{metrics['curated_candidate_document_parameter_pairs']} ({metrics['candidate_pair_detection_rate']:.1%})",
+        "- Accuracy: not measured because there is no independently human-labelled gold-standard dataset",
         "",
-        "The regex extractor is a transparent prescreening baseline, not a reliable quantitative extractor. Long HTML-derived lines and omitted table cells cause it to select unrelated numbers or miss table values. The full-text ingestion and provenance layers are effective; quantitative extraction still needs schema-constrained AI plus human verification.",
+        "The regex extractor is a transparent prescreening baseline, not a reliable quantitative extractor. Long HTML-derived lines and omitted table cells cause it to select unrelated numbers or miss table values. The v0.5 connector now supplies schema-constrained AI extraction, but a live 22-report batch still requires a configured provider credential and human verification.",
         "",
         "## Reliability judgement at this stage",
         "",
@@ -392,6 +403,12 @@ def write_review_outputs(db_path: Path, output_dir: Path, validations: list[dict
             "conflict_flag": item["conflict_flag"],
             "decision": item["decision"],
             "human_status": item["human_status"],
+            "selection_method": "unweighted_median_of_candidate_source_central_estimates",
+            "selection_justification": (
+                "Median limits sensitivity to extreme source values; the full low-high envelope is retained. "
+                + ("Wide dispersion is conflict-flagged; human boundary filtering is required. " if item["conflict_flag"] else "")
+                + "Candidate-only result; not a human-approved HOMER input."
+            ),
         }
         for item in validations
     ]
@@ -458,6 +475,7 @@ def run(project_root: Path, output_dir: Path) -> dict:
 
     contributing = len({item["source_id"] for item in OBSERVATIONS})
     metrics = {
+        "llm_status": "connector_implemented_but_not_called_for_this_22_report_baseline",
         "documents_attempted": len(SOURCES), "documents_ingested": len(document_ids),
         "full_text_gate_passed": sum(item["full_text_gate_passed"] for item in manifest["documents"]),
         "ingestion_success_rate": len(document_ids) / len(SOURCES),

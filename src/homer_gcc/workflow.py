@@ -9,6 +9,7 @@ from typing import Any
 from . import db
 from .evidence import build_ai_extraction_task
 from .ingestion import ingest_corpus
+from .llm import run_llm_extraction_batch
 from .ontology import load_json, validate_ontology
 from .quantitative import import_proposals, load_records
 from .reporting import export_reports
@@ -98,7 +99,7 @@ def run_workflow(
     database_override: str | Path | None = None,
     reset_database: bool = False,
 ) -> dict[str, Any]:
-    """Run initialization -> ingestion -> extraction tasks -> validation -> reports."""
+    """Run initialization, ingestion, optional LLM extraction, validation and reports."""
 
     config_file = Path(config_path).resolve()
     base = config_file.parent
@@ -145,6 +146,24 @@ def run_workflow(
         [str(value) for value in extraction.get("parameters", [])],
         extraction_output,
     )
+
+    llm_result: dict[str, Any] | None = None
+    llm_config = extraction.get("llm") or {}
+    if llm_config.get("enabled", False):
+        if not extraction.get("parameters"):
+            raise ValueError("LLM extraction requires extraction.parameters")
+        llm_output = _resolved(
+            base,
+            llm_config.get("output_dir", "../output/workflow/llm_extraction"),
+        )
+        llm_result = run_llm_extraction_batch(
+            db_path,
+            document_ids,
+            [str(value) for value in extraction.get("parameters", [])],
+            llm_config,
+            llm_output,
+            config_base=base,
+        )
 
     proposal_ids: list[int] = []
     proposal_file = _resolved(base, config.get("proposals"))
@@ -204,6 +223,10 @@ def run_workflow(
             "initialization": {"status": "completed"},
             "ingestion": ingestion_result,
             "extraction_tasks": {"count": len(task_files), "files": task_files},
+            "llm_extraction": llm_result or {
+                "status": "disabled",
+                "reason": "Set extraction.llm.enabled=true and configure a provider to batch-submit documents.",
+            },
             "proposals": {"imported_or_updated": len(proposal_ids), "proposal_ids": proposal_ids},
             "observations": {
                 "imported": len(observation_ids),
@@ -218,6 +241,20 @@ def run_workflow(
             "reports": {"count": len(report_files), "files": [str(path) for path in report_files]},
         },
     }
+    if llm_result is not None:
+        result["quantitative_performance"] = {
+            "reports_attempted": ingestion_result["attempted"],
+            "reports_ingested_or_reused": len(document_ids),
+            "reports_with_values": llm_result["documents_with_quantitative_evidence"],
+            "report_evidence_yield": llm_result["document_evidence_yield"],
+            "tasks_submitted": llm_result["tasks_submitted"],
+            "successful_tasks": llm_result["successful_tasks"],
+            "invalid_responses": llm_result["invalid_responses"],
+            "retries_used": llm_result["retries_used"],
+            "observations_imported": llm_result["observations_imported"],
+            "parameter_ranges": llm_result["parameter_ranges"],
+            "accuracy_status": llm_result["accuracy_status"],
+        }
     summary_path = _resolved(base, config.get("run_summary", "../output/workflow/workflow_run.json"))
     summary_path.parent.mkdir(parents=True, exist_ok=True)
     summary_path.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")

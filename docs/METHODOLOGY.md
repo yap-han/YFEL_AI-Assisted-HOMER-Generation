@@ -71,7 +71,7 @@ An AI extraction task uses a rigid schema and requires the model to:
 - Capture technology, geography, scale, operating conditions and boundary
 - Avoid averaging, normalization and source reconciliation
 
-The software also provides a transparent regex extractor for pre-screening and testing. Neither mechanism approves evidence. Extracted observations remain candidates until a reviewer checks them against the source.
+The software provides a configurable OpenAI-compatible connector and a transparent regex extractor for pre-screening and testing. The LLM route batch-submits ingested documents, requires verbatim quotations and detailed locations, validates the response against requested ontology fields and units, and retries malformed responses with the same immutable evidence-task hash. Neither mechanism approves evidence. Extracted observations remain candidates until a reviewer checks them against the source.
 
 ### Phase E — Normalize deterministically
 
@@ -148,7 +148,8 @@ The AI prototype is therefore sufficient to assist the proposed workflow, but no
 ## Current limits
 
 - The included numerical fixtures are synthetic and cannot support a research conclusion.
-- The package generates an external AI task contract but does not bundle a proprietary LLM service.
+- The package can call an OpenAI-compatible LLM service configured by model, endpoint and environment-variable credential. No model or API key is bundled.
+- Without an independently human-labelled gold-standard dataset, operational yield and value ranges may be reported, but extraction accuracy, precision and recall must not be claimed.
 - PDF extraction depends on locally available `pdftotext`; tables may still require manual or specialized parsing.
 - Exact retrieval relevance is transparent but metadata can be incomplete.
 - The validation envelope does not replace formal meta-analysis where study designs justify one.

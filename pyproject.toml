@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "modular-homer-evidence-prototype"
-version = "0.4.0"
+version = "0.5.0"
 description = "Modular evidence retrieval, parameter validation and model-run registry for energy-mix studies"
 requires-python = ">=3.10"
 dependencies = []

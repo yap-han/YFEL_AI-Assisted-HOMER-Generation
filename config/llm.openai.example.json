@@ -1,0 +1,14 @@
+{
+  "provider": "openai_compatible",
+  "model": "gpt-5-mini",
+  "endpoint": "https://api.openai.com/v1/chat/completions",
+  "api_key_env": "OPENAI_API_KEY",
+  "temperature": 0,
+  "timeout_seconds": 120,
+  "max_retries": 2,
+  "retry_delay_seconds": 1,
+  "normalization": {
+    "target_cost_year": 2025,
+    "annual_escalation_rate": 0.02
+  }
+}

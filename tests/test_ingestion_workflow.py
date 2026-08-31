@@ -112,6 +112,48 @@ class ConfiguredWorkflowTests(unittest.TestCase):
             self.assertEqual(len(task_payload["parameters"]), 2)
             self.assertTrue((root / "workflow_run.json").is_file())
 
+    def test_workflow_can_batch_submit_to_configured_llm(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            config = {
+                "schema_version": "1.0",
+                "database": "workflow.sqlite",
+                "context": {
+                    "ontology": str(ROOT / "config" / "ontology.json"),
+                    "profile": str(ROOT / "config" / "study_profile.json"),
+                },
+                "ingestion": {
+                    "manifest": str(ROOT / "evidence" / "corpus_manifest.example.json"),
+                    "require_rights": True,
+                    "fail_fast": True,
+                },
+                "extraction": {
+                    "parameters": ["pv.capital_cost"],
+                    "output_dir": "tasks",
+                    "llm": {
+                        "enabled": True,
+                        "provider": "fixture",
+                        "response_file": str(ROOT / "data" / "llm_fixture_responses.json"),
+                        "max_retries": 2,
+                        "output_dir": "llm_results",
+                    },
+                },
+                "validation": {"enabled": False},
+                "reports": {"output_dir": "reports"},
+                "run_summary": "workflow_run.json",
+            }
+            config_path = root / "workflow.json"
+            config_path.write_text(json.dumps(config), encoding="utf-8")
+            result = run_workflow(config_path, reset_database=True)
+            performance = result["quantitative_performance"]
+            self.assertEqual(performance["reports_ingested_or_reused"], 1)
+            self.assertEqual(performance["retries_used"], 1)
+            self.assertEqual(performance["observations_imported"], 1)
+            self.assertEqual(performance["parameter_ranges"][0]["provisional_selected_value"], 885)
+            llm_stage = result["stages"]["llm_extraction"]
+            self.assertTrue(Path(llm_stage["performance_report"]).is_file())
+            self.assertTrue(Path(llm_stage["parameter_ranges_file"]).is_file())
+
 
 if __name__ == "__main__":
     unittest.main()

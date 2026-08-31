@@ -9,6 +9,7 @@ from typing import Any
 from . import db
 from .evidence import build_ai_extraction_task, extract_numeric_candidates, read_document
 from .ingestion import ingest_corpus
+from .llm import run_llm_extraction_batch
 from .ontology import load_json, ontology_summary, validate_ontology
 from .quantitative import export_scenario, import_proposals, load_records
 from .reporting import export_reports
@@ -462,6 +463,39 @@ def command_make_extraction_task(args: argparse.Namespace) -> int:
     output.write_text(json.dumps(task, indent=2, ensure_ascii=False), encoding="utf-8")
     print(json.dumps({"status": "extraction_task_created", "output": str(output)}, indent=2))
     return 0
+
+
+def command_llm_extract_batch(args: argparse.Namespace) -> int:
+    _initialize_quantitative(args)
+    config_path = Path(args.config).resolve()
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    if isinstance(config.get("llm"), dict):
+        config = config["llm"]
+    if args.document_ids:
+        document_ids = [int(value) for value in _csv_values(args.document_ids)]
+    else:
+        with db.connect(args.db) as connection:
+            document_ids = [
+                int(row[0])
+                for row in connection.execute(
+                    "SELECT document_id FROM full_text_documents ORDER BY document_id"
+                )
+            ]
+    if not document_ids:
+        raise ValueError("No ingested documents are available for LLM extraction")
+    parameters = _csv_values(args.parameters)
+    if not parameters:
+        raise ValueError("At least one parameter ID is required")
+    result = run_llm_extraction_batch(
+        args.db,
+        document_ids,
+        parameters,
+        config,
+        args.output,
+        config_base=config_path.parent,
+    )
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    return 0 if result["failed_tasks"] == 0 or args.allow_partial else 1
 
 
 def command_extract_observations(args: argparse.Namespace) -> int:
@@ -925,6 +959,19 @@ def parser() -> argparse.ArgumentParser:
     task.add_argument("--parameters", required=True, help="Comma-separated ontology parameter IDs")
     task.add_argument("--output", required=True)
     task.set_defaults(function=command_make_extraction_task)
+
+    llm_extract = sub.add_parser(
+        "llm-extract-batch",
+        help="Batch-submit ingested documents to a configured LLM and import schema-valid candidates",
+    )
+    llm_extract.add_argument("--db", default=PROJECT_ROOT / "output" / "prototype.sqlite")
+    _add_context_arguments(llm_extract, include_policy=False)
+    llm_extract.add_argument("--config", required=True, help="LLM provider JSON configuration")
+    llm_extract.add_argument("--parameters", required=True, help="Comma-separated ontology parameter IDs")
+    llm_extract.add_argument("--document-ids", help="Optional comma-separated IDs; default is every ingested document")
+    llm_extract.add_argument("--output", default=PROJECT_ROOT / "output" / "llm_extraction")
+    llm_extract.add_argument("--allow-partial", action="store_true")
+    llm_extract.set_defaults(function=command_llm_extract_batch)
 
     extract = sub.add_parser("extract-observations", help="Run transparent regex pre-extraction on one parameter")
     extract.add_argument("--db", default=PROJECT_ROOT / "output" / "prototype.sqlite")

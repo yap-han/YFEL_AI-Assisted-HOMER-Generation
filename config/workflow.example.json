@@ -16,7 +16,23 @@
       "generator.capital_cost",
       "battery.round_trip_efficiency"
     ],
-    "output_dir": "../output/workflow/extraction_tasks"
+    "output_dir": "../output/workflow/extraction_tasks",
+    "llm": {
+      "enabled": false,
+      "provider": "openai_compatible",
+      "model": "gpt-5-mini",
+      "endpoint": "https://api.openai.com/v1/chat/completions",
+      "api_key_env": "OPENAI_API_KEY",
+      "temperature": 0,
+      "timeout_seconds": 120,
+      "max_retries": 2,
+      "retry_delay_seconds": 1,
+      "output_dir": "../output/workflow/llm_extraction",
+      "normalization": {
+        "target_cost_year": 2025,
+        "annual_escalation_rate": 0.02
+      }
+    }
   },
   "validation": {
     "enabled": false,

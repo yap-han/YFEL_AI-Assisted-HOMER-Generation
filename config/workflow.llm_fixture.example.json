@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "database": "../output/llm_fixture_workflow/workflow.sqlite",
+  "context": {
+    "ontology": "ontology.json",
+    "profile": "study_profile.json"
+  },
+  "ingestion": {
+    "manifest": "../evidence/corpus_manifest.example.json",
+    "require_rights": true,
+    "fail_fast": true
+  },
+  "extraction": {
+    "parameters": ["pv.capital_cost"],
+    "output_dir": "../output/llm_fixture_workflow/extraction_tasks",
+    "llm": {
+      "enabled": true,
+      "provider": "fixture",
+      "response_file": "../data/llm_fixture_responses.json",
+      "max_retries": 2,
+      "retry_delay_seconds": 0,
+      "output_dir": "../output/llm_fixture_workflow/llm_extraction",
+      "normalization": {
+        "target_cost_year": 2025,
+        "annual_escalation_rate": 0.02
+      }
+    }
+  },
+  "validation": {
+    "enabled": false,
+    "include_candidates": false,
+    "minimum_independent_sources": 2
+  },
+  "reports": {
+    "output_dir": "../output/llm_fixture_workflow/reports"
+  },
+  "run_summary": "../output/llm_fixture_workflow/workflow_run.json"
+}
