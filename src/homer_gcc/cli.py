@@ -22,6 +22,7 @@ from .retrieval import (
     safe_retrieve,
     score_candidate,
 )
+from .site.cli_site import register_site_commands
 from .study import profile_summary, validate_study_profile
 from .validation import prepare_observation, validate_proposal
 from .workflow import run_workflow
@@ -1095,6 +1096,8 @@ def parser() -> argparse.ArgumentParser:
     quant_demo.add_argument("--model-version", default="registry-demo")
     quant_demo.add_argument("--run-id", default="synthetic_demo_run")
     quant_demo.set_defaults(function=command_quant_demo)
+
+    register_site_commands(sub, DEFAULT_PROFILE)
     return root
 
 

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "description": "Literature bands used to sanity-check a synthesised aquaculture load profile. A metric inside its band passes; within 25 percent of the band width outside it warns; further out fails. Bands are screening aids, not evidence.",
+  "bands": {
+    "kwh_per_kg": {"low": 5.0, "high": 15.0, "anchor": 9.59,
+      "source": "Ayuso-Virgili et al. (2023) report 9.59 kWh/kg for a commercial-scale RAS; Badiola et al. (2018) review 3 to 81 kWh/kg across RAS designs, with intensive warm-water systems clustering in the lower third."},
+    "load_factor": {"low": 0.60, "high": 0.85, "anchor": 0.70,
+      "source": "Continuous life-support loads give aquaculture a high load factor compared with commercial buildings; team literature review section on load characteristics."},
+    "aeration_oxygenation_share": {"low": 0.25, "high": 0.45, "anchor": 0.35,
+      "source": "Badiola et al. (2018): aeration and oxygenation 9 to 37 percent of RAS energy; pond systems reach 90 to 95 percent (Nguyen et al. 2024), which does not apply to RAS."},
+    "cooling_share": {"low": 0.20, "high": 0.35, "anchor": 0.27,
+      "source": "Salameh et al. (2025), cited in the team literature review: cooling demand 20 to 35 percent in GCC climates."},
+    "critical_fraction": {"low": 0.50, "high": 0.75, "anchor": 0.60,
+      "source": "Team methodology: critical life-support loads (circulation, aeration, oxygenation, controls, part of temperature control) dominate intensive systems."}
+  }
+}

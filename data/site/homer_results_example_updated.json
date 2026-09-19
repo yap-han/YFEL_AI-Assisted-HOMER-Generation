@@ -1,0 +1,38 @@
+{
+  "scenario_id": "EXAMPLE_ONLY_evidence_updated",
+  "note": "Illustrative numbers to exercise site-compare-results; replace with HOMER exports.",
+  "architectures": [
+    {
+      "architecture_id": "grid-only",
+      "npc_usd": 9800000,
+      "renewable_fraction": 0.0,
+      "pv_kw": 0,
+      "generator_kw": 0,
+      "battery_kwh": 0
+    },
+    {
+      "architecture_id": "pv-grid",
+      "npc_usd": 8900000,
+      "renewable_fraction": 0.44,
+      "pv_kw": 3400,
+      "generator_kw": 0,
+      "battery_kwh": 0
+    },
+    {
+      "architecture_id": "pv-battery-grid",
+      "npc_usd": 8700000,
+      "renewable_fraction": 0.61,
+      "pv_kw": 3900,
+      "generator_kw": 0,
+      "battery_kwh": 3200
+    },
+    {
+      "architecture_id": "pv-diesel-battery-grid",
+      "npc_usd": 9000000,
+      "renewable_fraction": 0.58,
+      "pv_kw": 3700,
+      "generator_kw": 800,
+      "battery_kwh": 2600
+    }
+  ]
+}

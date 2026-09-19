@@ -1,0 +1,5 @@
+{
+  "provider": "fixture",
+  "response_file": "../../data/site/llm_inventory_fixture.json",
+  "note": "Offline connector for tests and demonstrations; returns scripted responses keyed by the task document_id."
+}
