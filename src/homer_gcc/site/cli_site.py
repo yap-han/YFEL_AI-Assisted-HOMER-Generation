@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -85,7 +86,18 @@ def command_site_coverage(args: argparse.Namespace) -> int:
     scenario = load_json(args.scenario)
     literature = _csv_set(args.literature_ids)
     if args.aggregates:
-        literature |= literature_ids_from_aggregates(load_json(args.aggregates))
+        aggregates = Path(args.aggregates)
+        if not aggregates.exists():
+            for line in (
+                f"Aggregates file not found: {aggregates}",
+                "scenario_coverage.json is written by stage 7 of run-advanced-pipeline. The site layer",
+                "does not produce it and it is not part of the site output package. Either run the",
+                "evidence pipeline first, or omit --aggregates to report site-layer coverage only, or",
+                "pass the literature-supported parameter IDs with --literature-ids.",
+            ):
+                print(line, file=sys.stderr)
+            return 2
+        literature |= literature_ids_from_aggregates(load_json(aggregates))
     report = coverage_report(register, scenario, literature)
     _print(report)
     return 0 if not report["gaps"] else 1

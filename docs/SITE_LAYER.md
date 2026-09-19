@@ -42,6 +42,17 @@ PYTHONPATH=src python -m homer_gcc site-coverage \
   --register output/site/site_register_resolved.json \
   --aggregates output/advanced_pipeline/scenario_coverage.json
 
+# Site-side coverage only, before the evidence pipeline has been run: 13 of 32, with the
+# 19 literature parameters listed as gaps. `--aggregates` is optional and the file it names
+# is written by run-advanced-pipeline, not by the site layer.
+PYTHONPATH=src python -m homer_gcc site-coverage \
+  --register output/site/site_register_resolved.json
+
+# Or name the literature parameters directly, which reports 32 of 32
+PYTHONPATH=src python -m homer_gcc site-coverage \
+  --register output/site/site_register_resolved.json \
+  --literature-ids pv.capital_cost,pv.replacement_cost,pv.om_cost,pv.derating_factor,pv.lifetime,generator.capital_cost,generator.replacement_cost,generator.om_cost,generator.electrical_efficiency,generator.operating_lifetime,fuel.generator_minimum_load,battery.capital_cost,battery.replacement_cost,battery.om_cost,battery.round_trip_efficiency,battery.minimum_soc,battery.float_life,converter.efficiency,converter.capital_cost
+
 # Phase 2 country sensitivity: weather for six GCC reference sites
 PYTHONPATH=src python -m homer_gcc site-sweep --output output/site/sweep
 
