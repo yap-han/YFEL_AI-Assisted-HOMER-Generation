@@ -1,0 +1,31 @@
+{
+  "note": "Scripted responses for the optional AI inventory-drafting step. The first response is deliberately malformed (an ontology_id outside the aquaculture_load family) so the retry path is exercised; the second is valid. These are software fixtures, not engineering estimates.",
+  "documents": [
+    {
+      "document_id": "inventory:sa_allith_ras_500t",
+      "responses": [
+        {"equipment": [
+          {"id": "pumps", "ontology_id": "pv.capital_cost", "rated_kw": 30, "quantity": 5, "duty_cycle": 0.85, "driver": "constant", "criticality": "critical", "basis": "engineering estimate"}
+        ]},
+        {"equipment": [
+          {"id": "pumps", "label": "Recirculation pumps", "ontology_id": "load.circulation_pump_power", "rated_kw": 30, "quantity": 5, "duty_cycle": 0.85, "driver": "constant", "criticality": "critical", "basis": "engineering estimate: fixture", "confidence": "low"},
+          {"id": "blowers", "label": "Blowers", "ontology_id": "load.aeration_power", "rated_kw": 30, "quantity": 4, "duty_cycle": 0.85, "driver": "diurnal_do", "criticality": "critical", "basis": "engineering estimate: fixture", "confidence": "low"},
+          {"id": "chillers", "label": "Chillers", "ontology_id": "load.cooling_power", "rated_kw": 75, "quantity": 4, "duty_cycle": 1.0, "driver": "temperature", "criticality": "essential", "basis": "engineering estimate: fixture", "confidence": "low"},
+          {"id": "controls", "label": "Controls", "ontology_id": "load.monitoring_controls_power", "rated_kw": 12, "quantity": 1, "duty_cycle": 1.0, "driver": "constant", "criticality": "critical", "basis": "engineering estimate: fixture", "confidence": "low"}
+        ]}
+      ]
+    },
+    {
+      "document_id": "inventory:test_site",
+      "responses": [
+        {"equipment": [
+          {"id": "pumps", "ontology_id": "pv.capital_cost", "rated_kw": 30, "quantity": 5, "duty_cycle": 0.85, "driver": "constant", "criticality": "critical", "basis": "engineering estimate"}
+        ]},
+        {"equipment": [
+          {"id": "pumps", "label": "Recirculation pumps", "ontology_id": "load.circulation_pump_power", "rated_kw": 30, "quantity": 5, "duty_cycle": 0.85, "driver": "constant", "criticality": "critical", "basis": "engineering estimate: fixture", "confidence": "low"},
+          {"id": "controls", "label": "Controls", "ontology_id": "load.monitoring_controls_power", "rated_kw": 12, "quantity": 1, "duty_cycle": 1.0, "driver": "constant", "criticality": "critical", "basis": "engineering estimate: fixture", "confidence": "low"}
+        ]}
+      ]
+    }
+  ]
+}
