@@ -1,0 +1,953 @@
+{
+  "schema_version": "1.0",
+  "register_id": "baseline_generic_v1",
+  "evidence_tier": "baseline_generic",
+  "context_location": "generic",
+  "entered_by": "technology_register",
+  "responsible": "Mohammad Abusalim",
+  "compiled": "2026-09-19",
+  "description": "Control-arm register for the 19 literature-supported inputs of the minimum HOMER scenario. Values come from public techno-economic datasets and software documentation (NREL, now NLR, ATB 2024 and battery cost projections 2025; IRENA Renewable Power Generation Costs; PNNL Energy Storage Grid Cost and Performance 2022; BloombergNEF battery price surveys; HOMER Pro documentation; manufacturer data), deliberately not regional and not aquaculture-specific. Bounds are the range the sources support, not a confidence interval. Every row is a candidate for the human gate. Regional data points are recorded in regional_note for the treatment arm and are not used in the control values.",
+  "method_note": "Research assisted by AI agents that opened each source and recorded the locator; every value was then checked and the bounds and basis set by the responsible author. Where a source reports at a different boundary (for example AC versus DC nameplate, or a total system including the power conversion system), the conversion is stated in basis. URLs are the publisher's canonical addresses: nrel.gov did not resolve from the compilation environment, so NREL documents were retrieved through a mirror host and verified against their own title page and suggested citation before being recorded.",
+  "parameters": [
+    {
+      "parameter_id": "pv.capital_cost",
+      "homer_component": "PV",
+      "homer_field": "Capital cost (USD/kWdc)",
+      "unit": "USD/kWdc",
+      "base": 1710,
+      "low": 758,
+      "high": 2950,
+      "cost_year": 2022,
+      "currency": "USD",
+      "source_title": "NREL, U.S. Solar Photovoltaic System and Energy Storage Cost Benchmarks, With Minimum Sustainable Price Analysis: Q1 2023 (Ramasamy et al., NREL/TP-7A40-87303)",
+      "source_url": "https://www.nrel.gov/docs/fy23osti/87303.pdf",
+      "source_type": "official_dataset",
+      "locator": "Table 3 (p. 34), Q1 2023 PV MSP and MMP benchmarks in 2022 USD; Text Box 1 (p. 24), commercial versus community solar; Section 6.1, representative 3 MWdc system with three-phase string inverters at ILR 1.34, results stated applicable to 1.5 to 6 MWdc",
+      "country": "global",
+      "year": 2023,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "Base 1,710 USD/kWdc is the Q1 2023 modeled market price of a 3 MWdc ground-mounted fixed-tilt system (1.76 USD/Wdc, Table 3) less the 0.05 USD/Wdc that Text Box 1 states community solar carries above a comparable single-offtaker commercial ground-mount system, in 2022 USD, turnkey (modules, inverters, structural and electrical BOS, installation, permitting and interconnection, overhead, sales tax, profit); the report states the per-unit result applies to 1.5 to 6 MWdc, which brackets the 1 to 5 MWdc array here. Low 758 USD/kWdc is IRENA's 2023 global weighted average total installed cost of newly commissioned utility-scale PV (2023 USD, stated in DC terms); the ATB utility class gives 1,164 USD/kWdc (1.56 USD/Wac for 2023 divided by the ATB ILR of 1.34) as the alternative floor. High 2,950 USD/kW is the top of Lazard's 2026 LCOE+ Community and C&I solar capital-cost range (1,750 to 2,950 USD/kW, 5.5 MW low case to 1 MW high case; Lazard states neither DC or AC basis nor dollar year); the last NREL benchmark that modeled the commercial rooftop class, Q1 2022, gives 1,840 USD/kWdc MMP for a 200 kWdc rooftop in 2021 USD.",
+      "regional_note": "IRENA 2023 report, chapter 3 (p. 104): 'In Saudi Arabia, the LCOE increased 18% in 2023 to reach USD 0.044/kWh, after decreasing 31% during 2022. However, the LCOE in 2023 was still lower than in 2021, when it had been USD 0.053/kWh'. Saudi Arabia is one of the 15 countries in Figures 3.6 and 3.7 (utility-scale total installed cost breakdown by country, 2023 USD/kW) but its bar value is drawn, not printed; the printed 2023 country range is USD 659/kW (Bulgaria) to USD 1,255/kW (South Africa). https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2024/Sep/IRENA_Renewable_power_generation_costs_in_2023.pdf",
+      "secondary_sources": [
+        {
+          "title": "NREL ATB 2024, Utility-Scale PV",
+          "url": "https://atb.nrel.gov/electricity/2024/utility-scale_pv",
+          "value": "Overnight capital cost plus grid connection 1.43 USD/Wac (2022) and 1.56 USD/Wac (2023), 100 MWdc (74.6 MWac) one-axis tracking, ILR 1.34; equals 1,067 and 1,164 USD/kWdc",
+          "note": "Page text: 'starting with the 2020 ATB, we use $/kWAC for utility-scale PV' and 'adjusted from $/WDC to $/WAC by an ILR of 1.34'. Read from the Wayback capture of 2026-01-11 because atb.nrel.gov does not resolve from this environment."
+        },
+        {
+          "title": "IRENA, Renewable Power Generation Costs in 2023 (September 2024), executive summary and chapter 3",
+          "url": "https://www.irena.org/Publications/2024/Sep/Renewable-Power-Generation-Costs-in-2023",
+          "value": "Global weighted average total installed cost of utility-scale PV fell 17% from USD 908/kW (2022) to USD 758/kW (2023); China and Spain at USD 671/kW; France USD 955/kW",
+          "note": "Methodology states 'For PV, total installed costs are in direct current (DC) terms'."
+        },
+        {
+          "title": "Lazard 2026 LCOE+ (July 2026), LCOE v19.0 assumptions",
+          "url": "https://www.lazard.com/media/kcfconhf/lazards-lcoeplus_vf.pdf",
+          "value": "Solar PV Community & C&I capital cost 1,750 to 2,950 USD/kW (5.5 MW to 1 MW); Solar PV Utility 1,250 to 1,850 USD/kW (200 MW to 100 MW)",
+          "note": "Appendix A, page 26. Unit basis (DC or AC) and dollar year not stated."
+        },
+        {
+          "title": "NREL Q1 2022 benchmark (Ramasamy et al. 2022, NREL/TP-7A40-83586), Table 16",
+          "url": "https://www.nrel.gov/docs/fy22osti/83586.pdf",
+          "value": "200 kWdc rooftop PV: 1.63 USD/Wdc MSP, 1.84 USD/Wdc MMP (2.00 and 2.26 USD/Wac at ILR 1.23); 500 kWdc ground-mount: 1.71 MSP, 1.94 MMP USD/Wdc; 100 MWdc utility: 0.87 MSP, 0.99 MMP USD/Wdc",
+          "note": "2021 USD. The commercial rooftop class was not re-benchmarked in Q1 2023."
+        },
+        {
+          "title": "NREL Q1 2023 benchmark, Table 3, utility-scale rows",
+          "url": "https://www.nrel.gov/docs/fy23osti/87303.pdf",
+          "value": "100 MWdc one-axis tracking: 0.96 USD/Wdc MSP, 1.17 USD/Wdc MMP",
+          "note": "The executive summary of the same report prints 0.97 and 1.16; Table 3 values are used here."
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "pv.replacement_cost",
+      "homer_component": "PV",
+      "homer_field": "Replacement cost (USD/kWdc)",
+      "unit": "USD/kWdc",
+      "base": 1710,
+      "low": 758,
+      "high": 2950,
+      "cost_year": 2022,
+      "currency": "USD",
+      "source_title": "HOMER Knowledge Base, 'PV Replacement Cost' (HOMER Energy / UL Solutions)",
+      "source_url": "https://homerenergy.com/docs/knowledgebase/article/pv-replacement-cost/",
+      "source_type": "software_documentation",
+      "locator": "Article body, final sentence: 'By default, HOMER makes the replacement cost equal to the capital cost'",
+      "country": "global",
+      "year": 2024,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "No source opened distinguishes an end-of-life array replacement price from the initial turnkey price, so replacement cost is set equal to pv.capital_cost (low, base and high identical), which is the default rule HOMER's own knowledge base states. The HOMER Pro 3.16 PV page defines replacement cost as 'the cost of replacing the PV system at the end of its lifetime' and its screenshot example uses a lower replacement than capital value (2,500 versus 3,000 USD/kW), which is illustrative only. When the array lifetime equals the project lifetime the value affects only salvage.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "HOMER Pro 3.16 documentation, Photovoltaic Panels (PV)",
+          "url": "https://homerenergy.com/products/pro/docs/latest/photovoltaic_panels_pv.html",
+          "value": "Screenshot example: capital 3,000 USD/kW, replacement 2,500 USD/kW, O&M 0",
+          "note": "Illustrative values, not a benchmark."
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "pv.om_cost",
+      "homer_component": "PV",
+      "homer_field": "O&M cost (USD/kWdc/year)",
+      "unit": "USD/kWdc/year",
+      "base": 19,
+      "low": 16.4,
+      "high": 40,
+      "cost_year": 2022,
+      "currency": "USD",
+      "source_title": "NREL ATB 2024, Commercial PV and Utility-Scale PV pages, Operation and Maintenance (O&M) Costs sections",
+      "source_url": "https://atb.nrel.gov/electricity/2024/commercial_pv",
+      "source_type": "official_dataset",
+      "locator": "Commercial PV page, O&M section: 'The FOM cost of about $19/kWDC-yr for 2023 ... system-related expenses ($15.5/kWDC-yr) and administration-related expenses ($3.3/kWDC-yr)'; Utility-Scale PV page, O&M section: 'The fixed O&M (FOM) cost of $22/kWAC-yr for 2023' and 'NLR analysts estimate O&M costs can range from $0/kWDC-yr to $40/kWDC-yr ($0/kWAC-yr to $54/kWAC-yr at an ILR of 1.34)'",
+      "country": "global",
+      "year": 2024,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "Base 19 USD/kWdc-yr is the ATB 2024 commercial PV fixed O&M for 2023 (200 kWdc flat-roof system), reported per kWdc, so no conversion. Low 16.4 USD/kWdc-yr is the ATB utility-scale FOM of 22 USD/kWac-yr for 2023 divided by the ATB ILR of 1.34 (the utility page reports O&M per kWac), which matches the NREL Q1 2023 utility MMP of 16.58 USD/kWdc-yr. High 40 USD/kWdc-yr is the top of the range NLR analysts state on both ATB pages and coincides with the NREL Q1 2023 community-solar MMP of 40.51 USD/kWdc-yr, of which 17.41 is subscriber management that a single-offtaker farm does not carry. The ATB pages do not restate the dollar year in the text opened; the NREL benchmarks they cite are in 2022 USD (Q1 2023) and 2021 USD (Q1 2022). Desert module cleaning is not priced separately in any of these sources and would push a Red Sea site toward the upper half of the range.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "NREL Q1 2023 benchmark, Table 3 and Section 8",
+          "url": "https://www.nrel.gov/docs/fy23osti/87303.pdf",
+          "value": "PV O&M: 16.12 MSP / 16.58 MMP USD/kWdc/yr (utility, single-axis); 39.83 / 40.51 (community solar, 3 MWdc); 28.78 / 30.36 (residential); of the community figure 17.41 USD/kWdc/yr is subscriber management and 5.05 asset management",
+          "note": "2022 USD."
+        },
+        {
+          "title": "NREL Q1 2022 benchmark, Section 12 O&M",
+          "url": "https://www.nrel.gov/docs/fy22osti/83586.pdf",
+          "value": "MSP O&M: 29.49 (residential), 18.11 (commercial rooftop), 17.21 (commercial ground-mounted), 16.11 (utility single-axis) USD/kWdc/yr",
+          "note": "2021 USD; the last NREL edition with a commercial ground-mount O&M figure."
+        },
+        {
+          "title": "NREL ATB 2024, Utility-Scale PV, O&M base year",
+          "url": "https://atb.nrel.gov/electricity/2024/utility-scale_pv",
+          "value": "24 USD/kWac-yr in 2022 (17.9 USD/kWdc-yr at ILR 1.34); 2023 split: system 14.4, property 5.4, administration 2.4 USD/kWac-yr",
+          "note": ""
+        },
+        {
+          "title": "Lazard 2026 LCOE+, LCOE v19.0 assumptions p. 26",
+          "url": "https://www.lazard.com/media/kcfconhf/lazards-lcoeplus_vf.pdf",
+          "value": "Fixed O&M: Community & C&I 13.00 to 20.00 USD/kW-yr; Utility 8.25 to 26.25 USD/kW-yr",
+          "note": "Unit basis not stated."
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "pv.derating_factor",
+      "homer_component": "PV",
+      "homer_field": "Derating factor (%)",
+      "unit": "%",
+      "base": 86,
+      "low": 80,
+      "high": 89,
+      "cost_year": null,
+      "currency": "USD",
+      "source_title": "NREL, PVWatts Version 5 Manual (Dobos, NREL/TP-6A20-62641)",
+      "source_url": "https://www.nrel.gov/docs/fy14osti/62641.pdf",
+      "source_type": "software_documentation",
+      "locator": "Table 2 Input Parameters (System losses default 14 %; Inverter efficiency 96; DC/AC ratio 1.1); Section 11 System Losses, Table 6 (soiling 2, shading 3, snow 0, mismatch 2, wiring 2, connections 0.5, light-induced degradation 1.5, nameplate rating 1, age 0, availability 3; total 14 % via Eqn. 9); Section 12 Inverter Model",
+      "country": "global",
+      "year": 2014,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "Base 86 % is 100 minus the PVWatts V5 default system losses of 14 %, which by construction exclude inverter efficiency (a separate input) and temperature (modeled explicitly), the same boundary as the HOMER derating factor when temperature is modeled on the PV Temperature tab. Low 80 % is the Table 6 multiplicative stack re-run with soiling raised from 2 % to 8 % for a desert array washed monthly (1 - 0.92 x 0.97 x 0.98 x 0.98 x 0.995 x 0.985 x 0.99 x 0.97 = 19.3 % loss); it also matches the HOMER Knowledge Base advice to 'simply reduce the derating factor to 80% or 70%' for warm climates when temperature is not modeled. High 89 % is the same stack for a clean open ground-mount with shading 0.5 %, soiling 2 % and availability 2 % (10.9 % loss). The HOMER Pro 3.16 derating-factor page defines the factor and lists soiling, wiring, shading, snow cover and aging as its content but prints no default; the 80 % HOMER default named in the brief could not be read on any HOMER page opened and is carried only as a Knowledge Base user example.",
+      "regional_note": "GCC soiling figures, read from the papers' abstracts through the OpenAlex and Crossref APIs because mdpi.com returns HTTP 403 to every fetch route tried. (1) 'The Impact of Soiling on PV Module Performance in Saudi Arabia', Energies 2022, https://doi.org/10.3390/en15218033: 'Depending on the local environment and other factors, the PV performance has been reduced by somewhere between 2% and 50%. A single sandstorm reduced the module power output by 20%. As revealed in Dhahran, the PV module was exposed to an outdoor environment and not cleaned for 6 months resulting in a power drop of more than 50%. It is strongly advised to clean PV panels once a month or fewer'. (2) 'Quantification of PV Power and Economic Losses Due to Soiling in Qatar', Sustainability 2021, https://doi.org/10.3390/su13063364, Qatar University solar facility, Doha: 'without cleaning, soiling reduced the output power by 43% after six months of exposure to an average ambient dust density of 0.7 mg/m3', about 7 percent per month on average. (3) 'Effect of Soiling on Solar Photovoltaic Performance under Desert Climatic Conditions', Energies 2021, https://doi.org/10.3390/en14030659, 2.0 MWp car-park plant in Oman: cleaned output 1460 kW at noon, 1390 kW after one week, 1196 kW after three weeks and 904 kW after five weeks at the same irradiance; 'a soiling-percentage of 7.5% reduced the monthly electricity generation (307 MWh) by 5.6%'. (4) 'Seasonal Soiling Rates and Cleaning Optimization for PV Systems in Saudi Arabia: Arar Desert Climate', Energies 2026, https://doi.org/10.3390/en19184373: PVsyst scenario study, economic cleaning interval 60 to 90 days in the base case, 45 days under a high tariff. The per-month Saudi figures shown in search snippets (7 percent per month at Dhahran; 4 to 15 percent per month at Arar) were not read on a page and are not carried here.",
+      "secondary_sources": [
+        {
+          "title": "HOMER Pro 3.16, PV Derating Factor",
+          "url": "https://homerenergy.com/products/pro/docs/latest/pv_derating_factor.html",
+          "value": "'Use the derating factor to account for such factors as soiling of the panels, wiring losses, shading, snow cover, aging, and so on. If you choose not to explicitly model the effect of temperature on the PV array, include temperature-related effects in the derating factor.'",
+          "note": "Definition only; no default printed."
+        },
+        {
+          "title": "HOMER Knowledge Base, Modeling PV arrays",
+          "url": "https://homerenergy.com/docs/knowledgebase/article/modeling-pv-arrays/",
+          "value": "'you can simply reduce the derating factor to 80% or 70% (and not model the temperature)'",
+          "note": "Rule of thumb for warm climates, not a stated default."
+        },
+        {
+          "title": "HOMER Knowledge Base, Why is my PV Output higher than the rated number?",
+          "url": "https://homerenergy.com/docs/knowledgebase/article/why-is-my-pv-output-higher-than-the-rated-number/",
+          "value": "User example: 'The derating factor is set to 80%'",
+          "note": ""
+        },
+        {
+          "title": "NREL ATB 2024, Utility-Scale PV, Capacity Factor",
+          "url": "https://atb.nrel.gov/electricity/2024/utility-scale_pv",
+          "value": "'The baseline PV plant capacity factor incorporates an assumed degradation rate of 0.7%/yr'",
+          "note": "Degradation is separate from the derating factor in HOMER."
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "pv.lifetime",
+      "homer_component": "PV",
+      "homer_field": "Lifetime (years)",
+      "unit": "year",
+      "base": 30,
+      "low": 25,
+      "high": 35,
+      "cost_year": null,
+      "currency": "USD",
+      "source_title": "NREL ATB 2024, Definitions page, 'Technical Lifetimes for Technologies' table",
+      "source_url": "https://atb.nrel.gov/electricity/2024/definitions",
+      "source_type": "official_dataset",
+      "locator": "Definitions page, Technical Lifetimes table: 'Solar: Utility-scale PV 30; Solar: Distributed commercial PV 30; Solar: Distributed residential PV 30; Utility-scale battery storage 15; Commercial battery storage 15'; text: 'The value of a 30-year life is justified by current industry trends'",
+      "country": "global",
+      "year": 2024,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "Base 30 years is the ATB 2024 technical life for both utility-scale and commercial PV and is also Lazard's 2026 facility life for Community and C&I solar. High 35 years is Lazard's facility life for utility-scale solar (LCOE v19.0 assumptions, p. 26). Low 25 years is the conventional module warranty horizon and the HOMER default named in the brief; neither was read on a page opened here (no manufacturer datasheet was fetched, and the HOMER PV page defines Lifetime as 'the number of years before the PV panels must be replaced' without a default), so the low bound is the least verified of the three. The NREL Q1 2023 benchmark uses a 25-year lifetime in its community-solar O&M present-value calculation, and the Q1 2022 benchmark notes a 12-year warranty on commercial three-phase string inverters, so the inverter is replaced at least once within any of these array lives.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "Lazard 2026 LCOE+, LCOE v19.0 assumptions p. 26",
+          "url": "https://www.lazard.com/media/kcfconhf/lazards-lcoeplus_vf.pdf",
+          "value": "Facility life: Solar PV Community & C&I 30 years; Solar PV Utility 35 years",
+          "note": ""
+        },
+        {
+          "title": "NREL Q1 2022 benchmark, Section 12",
+          "url": "https://www.nrel.gov/docs/fy22osti/83586.pdf",
+          "value": "'A commercial rooftop string inverter with a 12-year warranty ... residential rooftop microinverter with a 25-year warranty'",
+          "note": "Inverter warranty horizons, not module."
+        },
+        {
+          "title": "NREL Q1 2023 benchmark, Section 8",
+          "url": "https://www.nrel.gov/docs/fy23osti/87303.pdf",
+          "value": "'We estimate a 25-year lifetime and a 6.5% discount rate to estimate the net present value of ongoing subscriber management costs'",
+          "note": ""
+        },
+        {
+          "title": "HOMER Pro 3.16, Photovoltaic Panels (PV)",
+          "url": "https://homerenergy.com/products/pro/docs/latest/photovoltaic_panels_pv.html",
+          "value": "Lifetime: 'The number of years before the PV panels must be replaced at the replacement cost specified in the costs table'",
+          "note": "No default printed."
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "generator.capital_cost",
+      "homer_component": "Generator",
+      "homer_field": "Capital cost (USD/kW)",
+      "unit": "USD/kW",
+      "base": 800,
+      "low": 650,
+      "high": 1810,
+      "cost_year": null,
+      "currency": "USD",
+      "source_title": "NREL REopt.jl, src/core/generator.jl (Generator struct defaults)",
+      "source_url": "https://raw.githubusercontent.com/NREL/REopt.jl/master/src/core/generator.jl",
+      "source_type": "software_documentation",
+      "locator": "Generator struct docstring and constructor: installed_cost_per_kw = off_grid_flag ? 880 : only_runs_during_grid_outage ? 650.0 : 800.0 (master branch as fetched 19 Sep 2026)",
+      "country": "global",
+      "year": 2026,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "REopt's documented installed cost for a diesel generator is USD 800/kW when the unit is grid-connected and may run at any time (the hybrid case here), USD 650/kW when it only runs during grid outages, and USD 880/kW off-grid; the boundary is installed cost of the genset, and no dollar-year is stated in the file read. Base 800 and low 650 are those two values. High 1,810 is the EIA / Sargent & Lundy 2020 Case 4 total overnight cost (2019 USD) for a 21.4 MW net natural-gas RICE plant (4 x 5.6 MW, with SCR, buildings, gas and electrical interconnection, owner's costs and 8 percent contingency), which is a full utility-plant boundary rather than a genset package, so despite its scale it sits above the genset figures and is used as the ceiling. The NREL Distributed Generation cost page with its diesel row could not be opened (nrel.gov returned no DNS record from this environment), so the base rests on REopt rather than that page.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "EIA / Sargent & Lundy, Capital Cost and Performance Characteristic Estimates for Utility Scale Electric Power Generating Technologies (SL-014940, Final Rev 1, 2020)",
+          "url": "https://www.eia.gov/analysis/studies/powerplants/capitalcost/archive/2020/pdf/capital_cost_AEO2020.pdf",
+          "value": "USD 1,810/kW net total overnight (2019 USD); engines OEM cost USD 11,974,000 of USD 38,727,000 total (31 percent)",
+          "note": "Section 4.2, Table 4-1, pp. 4-2 to 4-3; Case 4 Internal Combustion Engines 20 MW, 4 x 5.6 MW natural gas, 21.4 MW net, operating life 30 years"
+        },
+        {
+          "title": "Lazard LCOE+ June 2026, LCOE v19.0, Levelized Cost of Energy Assumptions (Conventional)",
+          "url": "https://lazard.com/media/kcfconhf/lazards-lcoeplus_vf.pdf",
+          "value": "Gas Peaking capital cost USD 1,100 to 1,650/kW; 250 to 900 MW; 30-year facility life",
+          "note": "p. 28. The 2026 report carries no diesel reciprocating engine column; gas peaking is the nearest conventional peaker and is a turbine plant, not a genset"
+        },
+        {
+          "title": "US EPA, Catalog of CHP Technologies, Section 2 Reciprocating Internal Combustion Engines (2015, rev. Sept 2017)",
+          "url": "https://www.epa.gov/sites/default/files/2015-07/documents/catalog_of_chp_technologies_section_2._technology_characterization_-_reciprocating_internal_combustion_engines.pdf",
+          "value": "System 3 (1,121 kW gas engine CHP, 2013 USD): gen set package USD 375/kW, total equipment USD 1,475/kW, total plant cost USD 2,366/kW; System 2 (633 kW): package USD 400/kW, plant USD 2,837/kW",
+          "note": "Table 2-4, p. 2-15; natural gas CHP with heat recovery and exhaust treatment, so the plant totals overstate a diesel genset; the gen set package line is the equipment-only comparator"
+        },
+        {
+          "title": "HOMER Pro 3.16 User Manual, Generator",
+          "url": "https://homerenergy.com/products/pro/docs/latest/generator.html",
+          "value": "Worked example: USD 500/kW capital, USD 400/kW replacement, USD 0.02/kW per hour O&M for a 40 kW generator",
+          "note": "Illustrative example, not a default"
+        },
+        {
+          "title": "Power Generation Enterprises, Caterpillar 3512 Generator: Complete Model Guide, Specs and Pricing 2026 (dealer page, 9 Mar 2026)",
+          "url": "https://powergenenterprises.com/caterpillar-3512-generator-guide",
+          "value": "Cat 3512C USD 95,000 to 185,000 for 1,230 to 1,500 kW; 3512B USD 65,000 to 135,000",
+          "note": "Dealer marketing page, mixed new and used market, equipment only; low confidence, not used in the range"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "generator.replacement_cost",
+      "homer_component": "Generator",
+      "homer_field": "Replacement cost (USD/kW)",
+      "unit": "USD/kW",
+      "base": 800,
+      "low": 640,
+      "high": 880,
+      "cost_year": null,
+      "currency": "USD",
+      "source_title": "NREL REopt.jl, src/core/generator.jl (Generator struct defaults)",
+      "source_url": "https://raw.githubusercontent.com/NREL/REopt.jl/master/src/core/generator.jl",
+      "source_type": "software_documentation",
+      "locator": "Generator struct: replace_cost_per_kw = off_grid_flag ? installed_cost_per_kw : 0.0; replacement_year = off_grid_flag ? 10 : analysis_years (master branch as fetched 19 Sep 2026)",
+      "country": "global",
+      "year": 2026,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "REopt sets replacement equal to installed cost wherever a replacement occurs inside the analysis period (off-grid case), so base equals the capital base, USD 800/kW, installed boundary. HOMER's own generator-page example sets replacement at 80 percent of capital (USD 400 against USD 500/kW) because the installation already exists, which gives the low of 640; the high of 880 is REopt's off-grid installed cost, which is also its replacement cost. No authoritative source read gives a separate equipment-share replacement figure for a diesel genset; the EIA 2020 RICE breakdown shows the engines at 31 percent of total plant cost, which would put an engine-only replacement near USD 560/kW of the USD 1,810/kW plant, but that is a utility-plant boundary and is recorded only as a secondary.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "HOMER Pro 3.16 User Manual, Generator",
+          "url": "https://homerenergy.com/products/pro/docs/latest/generator.html",
+          "value": "Replacement USD 400/kW against capital USD 500/kW (80 percent) in the worked example",
+          "note": "Illustrative example"
+        },
+        {
+          "title": "EIA / Sargent & Lundy 2020, Table 4-1",
+          "url": "https://www.eia.gov/analysis/studies/powerplants/capitalcost/archive/2020/pdf/capital_cost_AEO2020.pdf",
+          "value": "Engines (owner furnished, OEM) USD 11,974,000 of total capital USD 38,727,000; mechanical subtotal USD 17,495,000",
+          "note": "Equipment share of a 21.4 MW gas RICE plant, 2019 USD"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "generator.om_cost",
+      "homer_component": "Generator",
+      "homer_field": "O&M cost (USD/operating hour)",
+      "unit": "USD/operating_hour",
+      "base": 20,
+      "low": 10,
+      "high": 25,
+      "cost_year": 2019,
+      "currency": "USD",
+      "source_title": "EIA / Sargent & Lundy, Capital Cost and Performance Characteristic Estimates for Utility Scale Electric Power Generating Technologies (SL-014940, Final Rev 1, 2020)",
+      "source_url": "https://www.eia.gov/analysis/studies/powerplants/capitalcost/archive/2020/pdf/capital_cost_AEO2020.pdf",
+      "source_type": "official_dataset",
+      "locator": "Section 4.3, Table 4-2 Case 4 O&M Cost Estimate, p. 4-4: fixed O&M 35.16 USD/kW-year, variable O&M 5.69 USD/MWh, 2019 USD (Internal Combustion Engines, 4 x 5.6 MW natural gas)",
+      "country": "global",
+      "year": 2020,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "Non-fuel O&M for a 1,000 kW unit converted to HOMER's per-operating-hour convention as fixed x 1,000 kW / annual operating hours + variable x 1 MWh per hour at full load: EIA gives 35.16 x 1000 / 2000 + 5.69 = USD 23.27/h at 2,000 h/yr (a hybrid-system duty of about 23 percent capacity factor), USD 13.72/h at 4,380 h and USD 9.70/h at 8,760 h. Base 20 is where the independent sources converge: HOMER's knowledge base states about 2 US cents per kWh at rated output (USD 20/h at 1,000 kW) and USD 14/h for 400 to 800 kW units, HOMER's generator-page example uses USD 0.02/kW per hour, and the EPA CHP catalog quotes USD 0.019/kWh (2013 USD) for a 1,121 kW gas engine service contract. Low 10 is REopt's USD 20/kW-year at 2,000 h (USD 10/h), the EIA value at continuous duty (USD 9.70/h) and the Lazard gas-peaking band at 2,000 h (USD 8.50 to 13.50/h); high 25 is the EIA value at 2,000 h rounded up and the EPA catalog's USD 0.021 to 0.025/kWh for sub-700 kW engines. Utility fixed O&M includes plant labor and G&A, which overstates a farm genset, so the EIA figure is treated as the top of the range rather than the base.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "HOMER Knowledge Base, Generator",
+          "url": "https://homerenergy.com/docs/knowledgebase/homer-model/generator/",
+          "value": "Diesel O&M about 2 US cents per kWh at rated output (USD 1/hr for a 50 kW diesel); USD 14/hr for the 400 to 800 kW range",
+          "note": "HOMER's own guidance in its USD per operating hour convention"
+        },
+        {
+          "title": "HOMER Pro 3.16 User Manual, Generator",
+          "url": "https://homerenergy.com/products/pro/docs/latest/generator.html",
+          "value": "USD 0.60 per hour for a 40 kW generator = USD 0.02/kW per hour; oil change every 1,000 operating hours in the maintenance example",
+          "note": "Worked example"
+        },
+        {
+          "title": "US EPA, Catalog of CHP Technologies, Section 2, Table 2-6",
+          "url": "https://www.epa.gov/sites/default/files/2015-07/documents/catalog_of_chp_technologies_section_2._technology_characterization_-_reciprocating_internal_combustion_engines.pdf",
+          "value": "Total O&M 2013 USD/kWh: 0.023 to 0.025 (100 kW), 0.021 (633 kW), 0.019 (1,121 kW), 0.016 (3,326 kW), 0.0085 (9,341 kW); full service contracts 1 to 2.5 cents/kWh; oil, filter and coolant service every 500 to 2,000 hours",
+          "note": "Natural gas engines, 8,000 h/yr baseload; p. 2-16"
+        },
+        {
+          "title": "Lazard LCOE+ June 2026, LCOE v19.0 Assumptions (Conventional)",
+          "url": "https://lazard.com/media/kcfconhf/lazards-lcoeplus_vf.pdf",
+          "value": "Gas Peaking fixed O&M USD 10.00 to 17.00/kW-yr, variable O&M USD 3.50 to 5.00/MWh",
+          "note": "p. 28; at 1,000 kW and 2,000 h/yr this is USD 8.50 to 13.50 per operating hour; no diesel column in this edition"
+        },
+        {
+          "title": "NREL REopt.jl generator.jl",
+          "url": "https://raw.githubusercontent.com/NREL/REopt.jl/master/src/core/generator.jl",
+          "value": "om_cost_per_kw = 20.0 (10.0 off-grid) USD/kW-year; om_cost_per_kwh = 0.0",
+          "note": "At 1,000 kW and 2,000 h/yr this is USD 10/h"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "generator.electrical_efficiency",
+      "homer_component": "Generator",
+      "homer_field": "Fuel curve, efficiency at rated load (%)",
+      "unit": "%",
+      "base": 39,
+      "low": 32,
+      "high": 40,
+      "cost_year": null,
+      "currency": "USD",
+      "source_title": "Caterpillar, Cat 3512 Diesel Generator Sets, Prime-DCP 50 Hz spec sheet LEHE20483-00 (06/21)",
+      "source_url": "https://emc.cat.com/pubdirect.ashx?media_string_id=LEHE20483-",
+      "source_type": "manufacturer_datasheet",
+      "locator": "Page 2 of 4, Package Performance, Fuel Consumption: 1020 ekW / 1275 kVA rating, 100 percent load with fan 256.1 L/hr (75 percent 196.6, 50 percent 136.3, 25 percent 78.2); page 4 of 4, Fuel Rates: fuel oil 35 deg API, LHV 42,780 kJ/kg, 850 g/litre, per ISO 3046-1",
+      "country": "global",
+      "year": 2021,
+      "accessed": "2026-09-19",
+      "confidence": "high",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "Generator-terminal efficiency at rated prime load: 256.1 L/h x 0.850 kg/L x 42.780 MJ/kg / 3.6 = 2,586.8 kW of fuel energy, so 1020 / 2586.8 = 39.4 percent for the 1020 ekW Cat 3512 at 1500 rpm (the 920 ekW rating gives 234.1 L/h and 38.9 percent); the Cummins C1100D5 (800 kWe prime, 202 L/h at full load, DS36-CPGK 08/19) gives 39.2 percent on the same fuel basis and 40.0 percent on 0.83 kg/L and 43 MJ/kg, which sets the high of 40. Low 32 is REopt's default electric_efficiency_full_load of 0.322 for a generic diesel generator, with HOMER's documented worked example (75 kW, 22.5 L/h at full load and 10.5 L/h at 25 kW, 820 kg/m3, 43.2 MJ/kg, giving intercept coefficient 0.06 and slope 0.24 L/hr/kW and 33.9 percent at full load) just above it. A least-squares HOMER fuel curve fitted to the four Cat points is slope 0.233 L/hr/kW output and intercept 18.3 L/h, that is 0.018 L/hr/kW rated. The HOMER default intercept and slope of about 0.08 and 0.25 L/hr/kW quoted in the brief were not found on any HOMER Pro 3.16 page opened (generator, fuel curve, slope, intercept, efficiency curve, knowledge base) and are not used.",
+      "regional_note": "Saudi diesel pump price SAR 1.79/L in 2026 (USD 0.477/L) is already on the project's site register from https://www.globalpetrolprices.com/Saudi-Arabia/diesel_prices/ (accessed 19 Sep 2026 by the site layer, carried here, not re-opened today); at 0.251 L/kWh (256.1 L/h / 1020 kW) that is about USD 0.12/kWh of fuel at rated load.",
+      "secondary_sources": [
+        {
+          "title": "Cummins, Generator set data sheet C1100 D5, 50 Hz, DS36-CPGK (08/19)",
+          "url": "https://cdn.ade-power.com/assets/pdf/generators/cummins/cummins-c1100d5-data-sheet.pdf",
+          "value": "Prime 1000 kVA (800 kWe): 54 / 102 / 151 / 202 L/hr at 1/4, 1/2, 3/4 and full load; standby 1110 kVA (888 kWe): 58 / 113 / 167 / 224 L/hr; engine QST30-G4, 1500 rpm",
+          "note": "Data sheet states no fuel density or LHV; efficiency computed on the Cat fuel basis (39.2 percent) and on 0.83 kg/L, 43 MJ/kg (40.0 percent); hosted on a Cummins distributor site"
+        },
+        {
+          "title": "HOMER Pro 3.16 User Manual, How HOMER Creates the Generator Efficiency Curve",
+          "url": "https://homerenergy.com/products/pro/docs/latest/how_homer_creates_the_generator_efficiency_curve.html",
+          "value": "eta = 3.6 p / ((F0 + F1 p) rho LHV); example 75 kW diesel, 22.5 L/hr full load, 10.5 L/hr at 25 kW, 820 kg/m3, 43.2 MJ/kg: 33.9 percent at full load, 28.2 at 50 percent, 18.8 at 20 percent, 7.0 at 5 percent",
+          "note": "Defines the efficiency HOMER derives from the fuel curve; no default fuel curve values on the page"
+        },
+        {
+          "title": "HOMER Grid manual, Generator Fuel Curve Intercept Coefficient; HOMER Pro 3.11 manual, Generator Fuel Curve Slope",
+          "url": "https://homerenergy.com/products/grid/docs/latest/generator_fuel_curve_intercept_coefficient.html",
+          "value": "Example 50 kW genset: 8.48 L/hr at 25 kW, 15.3 L/hr at 50 kW gives slope 0.273 L/hr/kW and intercept coefficient 0.033 L/hr/kW rated",
+          "note": "Definitions only; no defaults stated"
+        },
+        {
+          "title": "NREL REopt.jl generator.jl",
+          "url": "https://raw.githubusercontent.com/NREL/REopt.jl/master/src/core/generator.jl",
+          "value": "electric_efficiency_full_load = 0.322; half-load efficiency defaults to the full-load value; fuel HHV 40.7 kWh/gal",
+          "note": "Generic diesel generator default"
+        },
+        {
+          "title": "US EPA, Catalog of CHP Technologies, Section 2, Table 2-2",
+          "url": "https://www.epa.gov/sites/default/files/2015-07/documents/catalog_of_chp_technologies_section_2._technology_characterization_-_reciprocating_internal_combustion_engines.pdf",
+          "value": "Gas spark-ignition engine electrical efficiency HHV 27.0 / 34.5 / 36.8 / 40.4 / 41.6 percent at 100 / 633 / 1,121 / 3,326 / 9,341 kW; text: diesel efficiency curve is comparatively flat between 50 and 100 percent load",
+          "note": "Natural gas engines, HHV basis, p. 2-8"
+        },
+        {
+          "title": "EIA / Sargent & Lundy 2020, Table 4-1",
+          "url": "https://www.eia.gov/analysis/studies/powerplants/capitalcost/archive/2020/pdf/capital_cost_AEO2020.pdf",
+          "value": "Net plant heat rate 8,295 Btu/kWh HHV (3,412 / 8,295 = 41.1 percent HHV) for the 21.4 MW gas RICE plant",
+          "note": "Natural gas, plant net, HHV"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "generator.operating_lifetime",
+      "homer_component": "Generator",
+      "homer_field": "Lifetime (operating hours)",
+      "unit": "h",
+      "base": 20000,
+      "low": 15000,
+      "high": 30000,
+      "cost_year": null,
+      "currency": "USD",
+      "source_title": "HOMER Pro 3.16 User Manual, Generator Lifetime",
+      "source_url": "https://homerenergy.com/products/pro/docs/latest/generator_lifetime.html",
+      "source_type": "software_documentation",
+      "locator": "Generator Lifetime page, table of estimated lifetimes by generator type: prime-power liquid-cooled diesel (7 to 10,000 kW) 20,000 to 80,000 hours; high-speed diesel (4 to 20 kW) 6,000 to 10,000 hours",
+      "country": "global",
+      "year": 2024,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "HOMER specifies generator lifetime in operating hours and lists prime-power liquid-cooled diesel units from 7 to 10,000 kW at 20,000 to 80,000 h; base 20,000 h is the bottom of that band for a 1,000 kW class unit run intermittently in a hybrid. High 30,000 h is the EPA CHP catalog's upper bound for a top-end overhaul (8,000 to 30,000 h) and its 1,500 rpm major-overhaul lower bound (30,000 h), the point at which a screening model would book a replacement-equivalent cost. Low 15,000 h is the EPA 1,800 rpm minor-overhaul upper bound (8,000 to 15,000 h) and the dealer-quoted top-end interval of 12,000 to 15,000 h for a Cat 3512. The HOMER default of 15,000 h named in the brief is not stated on any HOMER page opened, so the low does not rest on it.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "US EPA, Catalog of CHP Technologies, Section 2, section 2.4.6 and Table 2-5",
+          "url": "https://www.epa.gov/sites/default/files/2015-07/documents/catalog_of_chp_technologies_section_2._technology_characterization_-_reciprocating_internal_combustion_engines.pdf",
+          "value": "Top-end overhaul recommended between 8,000 and 30,000 h; major overhaul after 30,000 to 72,000 h; Table 2-5: 1,500 rpm minor 10 to 20 thousand h, major 30 to 50 thousand h; 1,800 rpm minor 8 to 15, major 30 to 36 thousand h",
+          "note": "Natural gas engines in baseload service, source SFA Pacific; p. 2-16"
+        },
+        {
+          "title": "Power Generation Enterprises, Caterpillar 3512 Generator guide (dealer page, 9 Mar 2026)",
+          "url": "https://powergenenterprises.com/caterpillar-3512-generator-guide",
+          "value": "Typical top-end interval 12,000 to 15,000 h; major (in-frame) overhaul interval 24,000 to 30,000 h",
+          "note": "Dealer page, low confidence; no total life stated"
+        },
+        {
+          "title": "NREL REopt.jl generator.jl",
+          "url": "https://raw.githubusercontent.com/NREL/REopt.jl/master/src/core/generator.jl",
+          "value": "replacement_year = 10 (off-grid) or the analysis horizon (grid-connected)",
+          "note": "Calendar years, not operating hours"
+        },
+        {
+          "title": "EIA / Sargent & Lundy 2020, Table 4-1",
+          "url": "https://www.eia.gov/analysis/studies/powerplants/capitalcost/archive/2020/pdf/capital_cost_AEO2020.pdf",
+          "value": "Operating life 30 years for the RICE plant",
+          "note": "Plant calendar life with overhauls inside fixed O&M"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "fuel.generator_minimum_load",
+      "homer_component": "Generator",
+      "homer_field": "Minimum load ratio (%)",
+      "unit": "%",
+      "base": 30,
+      "low": 25,
+      "high": 50,
+      "cost_year": null,
+      "currency": "USD",
+      "source_title": "Cummins Inc., PowerHour FAQs: Introduction to Generator Set Sizing Software (Session May 2019)",
+      "source_url": "https://www.cummins.com/sites/default/files/2019-10/FAQ_Introduction%20to%20Generator%20Set%20Sizing%20Software_vF.pdf",
+      "source_type": "manufacturer_datasheet",
+      "locator": "FAQ answer on the 10 percent minimum-rate example: 'The power should actually default to 30% of capacity. You are correct; you don't want to run a diesel engine at 10% because you will have problems with wet stacking ... you would use a load bank to assume the load and get it above 30%'",
+      "country": "global",
+      "year": 2019,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "Cummins states the diesel minimum load should default to 30 percent of capacity and that running at 10 percent causes wet stacking, which sets the base; HOMER's minimum load ratio page defines the input as the minimum allowable load as a percentage of rated capacity and uses 30 percent in its worked example, stating no default. Low 25 is HOMER's knowledge-base guidance that generators should not run below about 25 percent of rated capacity; high 50 is the same page's 'or maybe 50% depending on the model'. REopt's off-grid default min_turn_down_fraction of 0.15 (0 when grid-connected) is recorded as a software floor below the manufacturer guidance. Caterpillar's underloading and wet-stacking white papers on cat.com timed out on every attempt, so no Cat figure is used.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "HOMER Pro 3.16 User Manual, Generator Minimum Load Ratio",
+          "url": "https://homerenergy.com/products/pro/docs/latest/generator_minimum_load_ratio.html",
+          "value": "Definition; worked example at 30 percent; no default stated on the page",
+          "note": "Specifying a minimum load does not prevent the generator from being shut off, it prevents operation at too low a load"
+        },
+        {
+          "title": "HOMER Knowledge Base, Generator",
+          "url": "https://homerenergy.com/docs/knowledgebase/homer-model/generator/",
+          "value": "Generators should not run below about 25 percent (or maybe 50 percent depending on the model) of fully rated capacity",
+          "note": "HOMER's own range statement"
+        },
+        {
+          "title": "NREL REopt.jl generator.jl",
+          "url": "https://raw.githubusercontent.com/NREL/REopt.jl/master/src/core/generator.jl",
+          "value": "min_turn_down_fraction = 0.15 off-grid, 0.0 grid-connected",
+          "note": "Software default, below manufacturer guidance"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "battery.capital_cost",
+      "homer_component": "Storage",
+      "homer_field": "Capital cost (USD/kWh)",
+      "unit": "USD/kWh",
+      "base": 241,
+      "low": 168,
+      "high": 441,
+      "cost_year": 2024,
+      "currency": "USD",
+      "source_title": "Cost Projections for Utility-Scale Battery Storage: 2025 Update (NREL/TP-6A40-93281)",
+      "source_url": "https://www.nrel.gov/docs/fy25osti/93281.pdf",
+      "source_type": "official_dataset",
+      "locator": "Section 2.2, p. 6, text under Figure 1 and Figure 2 (Total Cost = Energy Cost x Duration + Power Cost; energy cost 241 $/kWh, power cost 372 $/kW, 2024$); Figure 1 stack for 2024: Li-ion battery cabinets 210, bi-directional inverter 26, SBOS 5, EBOS 44, installation labor 2, permitting and interconnection 2, sales tax 17, contingency 7, EPC overhead 6, profit 14, total 334 $/kWh",
+      "country": "global",
+      "year": 2025,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "Base is NREL's 2024 energy-proportional cost component for utility-scale storage (241 USD/kWh, 2024 USD, fitted from the bottom-up model in Section 2.2 and Figure 2): battery cabinets, energy-scaled balance of system and the energy share of tax, overhead and profit, excluding the power-proportional component (372 USD/kW), which HOMER carries in the converter. That matches the battery_pack_dc boundary and keeps the power conversion system costed exactly once across the two components. Low is the same NREL 2024 stack with the cabinet line (210 USD/kWh) replaced by the BloombergNEF December 2025 stationary-storage pack price (70 USD/kWh): 334 total, minus 26 bi-directional inverter, minus 210 cabinets, plus 70 = 168 USD/kWh, the floor an installer buying at the 2025 pack price could reach. High is PNNL's 2021 LFP 1 MW 2 h case with the USD/kWh lines summed and the USD/kW lines excluded: DC storage block 184.94 + DC BOS 45.55 + systems integration 56.56 + EPC 69.88 + project development 83.85 = 440.78 USD/kWh. A 1 to 10 MWh farm system sits below every scale these datasets cover, so the smallest PNNL case bounds the top.",
+      "regional_note": "SEC Tabuk-1 and Hail-2 BESS (Hithium supply, Alfanar EPC), Aug 2025: supply contracts USD 179 M and 183 M. Ember (Dec 2025) computes USD 73-75/kWh supply plus USD 47-48/kWh EPC, about USD 120/kWh all-in AC, on 2.45 GWh per site; ess-news reports the same contracts as 1 GW/4 GWh across both sites, which gives about USD 90/kWh supply, so the capacity basis differs between the two reports. https://www.ess-news.com/2025/08/20/hithium-secures-4-gwh-saudi-battery-storage-deal/ ; https://ember-energy.org/latest-insights/how-cheap-is-battery-storage/",
+      "secondary_sources": [
+        {
+          "title": "2022 Grid Energy Storage Technology Cost and Performance Assessment (PNNL-33283)",
+          "url": "https://www.pnnl.gov/sites/default/files/media/file/ESGC%20Cost%20Performance%20Report%202022%20PNNL-33283.pdf",
+          "value": "1 MW 4 h 2021: DC SB 182.27, DC BOS 42.38, SI 50.16, EPC 61.20, PD 73.43 $/kWh (sum 409.44); total installed 448.34 $/kWh incl. PCS; 10 MW 4 h total 410.70 $/kWh",
+          "note": "Figure 4.3, p. 24; read from the rendered figure. 2021 values, 2030 projected alongside"
+        },
+        {
+          "title": "BloombergNEF 2025 Lithium-Ion Battery Price Survey (press release, 9 Dec 2025)",
+          "url": "https://about.bnef.com/insights/clean-transport/lithium-ion-battery-pack-prices-fall-to-108-per-kilowatt-hour-despite-rising-metal-prices-bloombergnef/",
+          "value": "Stationary storage pack 70 $/kWh in 2025 (45 percent below 2024); LFP packs all segments 81 $/kWh; volume-weighted average 108 $/kWh",
+          "note": "Pack only, ex-works survey price"
+        },
+        {
+          "title": "BloombergNEF 2024 survey (press release, 10 Dec 2024)",
+          "url": "https://about.bnef.com/blog/lithium-ion-battery-pack-prices-see-largest-drop-since-2017-falling-to-115-per-kilowatt-hour-bloombergnef/",
+          "value": "Volume-weighted average pack 115 $/kWh; BEV 97 $/kWh; China 94 $/kWh",
+          "note": "No stationary or LFP figure in the post"
+        },
+        {
+          "title": "NREL ATB 2024, Utility-Scale Battery Storage",
+          "url": "https://atb.nrel.gov/electricity/2024/utility-scale_battery_storage",
+          "value": "Total System Cost ($/kW) = Battery Pack Cost ($/kWh) x Duration + BOS Cost ($/kW); base year 2022$, source Ramasamy et al. 2023; 60 MW 4 h capex falls 18/37/52 percent 2022-2035 (conservative/moderate/advanced)",
+          "note": "The ATB page does not print the $/kWh values; they sit in Figure 1 and the data download, which were not reachable. Total includes PCS"
+        },
+        {
+          "title": "NREL ATB 2024, Commercial Battery Storage",
+          "url": "https://atb.nrel.gov/electricity/2024/commercial_battery_storage",
+          "value": "Ex-factory pack 2022$: 1 h 211, 2 h 215, 4 h 199, 6 h 174, 8 h 164 $/kWh; battery central inverter 97.5 $/kWdc; 600 kW reference",
+          "note": "Pack only, 2022$; nearest ATB scale to a 1 to 10 MWh system"
+        }
+      ],
+      "notes": "Paired with converter.capital_cost, which carries the power conversion system so that it is costed exactly once. Regional data points (SEC Tabuk-1 and Hail-2, about 120 USD/kWh all-in AC on Ember's basis) belong to the treatment arm and are recorded in regional_note only."
+    },
+    {
+      "parameter_id": "battery.replacement_cost",
+      "homer_component": "Storage",
+      "homer_field": "Replacement cost (USD/kWh)",
+      "unit": "USD/kWh",
+      "base": 175,
+      "low": 106,
+      "high": 241,
+      "cost_year": 2024,
+      "currency": "USD",
+      "source_title": "Cost Projections for Utility-Scale Battery Storage: 2025 Update (NREL/TP-6A40-93281)",
+      "source_url": "https://www.nrel.gov/docs/fy25osti/93281.pdf",
+      "source_type": "official_dataset",
+      "locator": "Table 2, Appendix p. 16 (4-hour storage costs, 2024$/kWh: 2024 334; 2030 low 207, mid 279, high 354; 2035 low 147, mid 243, high 339); Figure 1 p. 6 for the 2035 bottom-up stack (cabinets 128, inverter 19, EBOS 62, total 254)",
+      "country": "global",
+      "year": 2025,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "NREL's mid projection for a complete 4-hour system is 243 $/kWh in 2035 (total, including the inverter). To hold the battery_pack_dc boundary, that total is scaled by the 2024 energy-cost share 241/334 = 0.722, giving 175 $/kWh; the low bound applies the same share to the 2035 low case (147 x 0.722 = 106). High is the current capital base (241 $/kWh) on the instruction to cap replacement at today's cost. 2035 is chosen because a 15 to 16 year float life from a 2026 build places replacement around 2041, and the 2035 column is the nearest tabulated year that is still a projection rather than an extrapolation; the 2041 mid value is 217 $/kWh total. PNNL's 2030 DC-block sum at 1 MW 4 h (119.28 + 31.64 + 42.56 + 51.92 + 62.31 = 307.71 $/kWh, 2021$) is the same-boundary alternative and sits above this base.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "2022 Grid Energy Storage Technology Cost and Performance Assessment (PNNL-33283)",
+          "url": "https://www.pnnl.gov/sites/default/files/media/file/ESGC%20Cost%20Performance%20Report%202022%20PNNL-33283.pdf",
+          "value": "2030 LFP 1 MW 4 h: DC SB 119.28, DC BOS 31.64, SI 42.56, EPC 51.92, PD 62.31 $/kWh (sum 307.71); 10 MW 4 h sum 288.25; total installed 340.46 and 311.11 $/kWh",
+          "note": "Figure 4.3, p. 24; learning-rate projection from Table 4.1"
+        },
+        {
+          "title": "NREL ATB 2024, Utility-Scale Battery Storage",
+          "url": "https://atb.nrel.gov/electricity/2024/utility-scale_battery_storage",
+          "value": "Moderate scenario: 37 percent capex reduction 2022-2035 for a 60 MW 4 h system (2.9 percent per year); conservative 18, advanced 52 percent",
+          "note": "Normalized only; total system incl. PCS"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "battery.om_cost",
+      "homer_component": "Storage",
+      "homer_field": "O&M cost (USD/kWh/year)",
+      "unit": "USD/kWh/year",
+      "base": 1.26,
+      "low": 1.15,
+      "high": 8.4,
+      "cost_year": 2021,
+      "currency": "USD",
+      "source_title": "2022 Grid Energy Storage Technology Cost and Performance Assessment (PNNL-33283)",
+      "source_url": "https://www.pnnl.gov/sites/default/files/media/file/ESGC%20Cost%20Performance%20Report%202022%20PNNL-33283.pdf",
+      "source_type": "official_dataset",
+      "locator": "Figure 4.3, p. 24, Fixed O&M row ($/kW-yr), LFP 2021: 1 MW 2 h 3.17, 1 MW 4 h 5.05, 10 MW 2 h 2.79, 10 MW 4 h 4.59; Section 4.1.2.1 p. 17 (0.43 percent of direct capital cost for SB, SBOS and power equipment plus a 30 percent power-equipment refurbishment every 10 years; 4.59 $/kW-yr for 10 MW 4 h)",
+      "country": "global",
+      "year": 2022,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "PNNL states fixed O&M per kW-year; converted at the 4-hour duration assumed for this register: base 5.05 / 4 = 1.26 $/kWh-yr (1 MW 4 h), low 4.59 / 4 = 1.15 (10 MW 4 h). At 2 hours the per-kWh figure is higher (3.17 / 2 = 1.59 at 1 MW). This PNNL figure covers inspections, filters, software and a periodic PCS refurbishment and contains no capacity augmentation, which is the right boundary for HOMER because degradation is carried by float life and throughput replacement. High is the ATB rule of 2.5 percent of capex in $/kW per year, which does include augmentation to hold rated capacity for 15 years, computed on the NREL 2024 total of 334 $/kWh x 4 h = 1,336 $/kW: 33.4 $/kW-yr / 4 h = 8.4 $/kWh-yr (2024$).",
+      "regional_note": "SEC Tabuk-1 and Hail-2: combined O&M contracts USD 1.63 M reported by ess-news (20 Aug 2025) against 4 GWh, which is about 0.4 $/kWh for the contract term; the term length is not stated, so it cannot be annualized. https://www.ess-news.com/2025/08/20/hithium-secures-4-gwh-saudi-battery-storage-deal/",
+      "secondary_sources": [
+        {
+          "title": "NREL ATB 2024, Utility-Scale Battery Storage",
+          "url": "https://atb.nrel.gov/electricity/2024/utility-scale_battery_storage",
+          "value": "FOM 2.5 percent of capital cost in $/kW per year, includes battery augmentation over a 15-year lifetime; VOM zero",
+          "note": "Total system boundary incl. PCS"
+        },
+        {
+          "title": "Cost Projections for Utility-Scale Battery Storage: 2025 Update (NREL/TP-6A40-93281)",
+          "url": "https://www.nrel.gov/docs/fy25osti/93281.pdf",
+          "value": "FOM 4 percent of the $/kW capacity cost for a 4-hour battery, chosen from the high end so that it counteracts degradation at one cycle per day; VOM zero (Section 3, p. 11)",
+          "note": "On 1,336 $/kW this is 53.4 $/kW-yr or 13.4 $/kWh-yr; includes augmentation"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "battery.round_trip_efficiency",
+      "homer_component": "Storage",
+      "homer_field": "Round-trip efficiency (%)",
+      "unit": "%",
+      "base": 89.55,
+      "low": 86.0,
+      "high": 91.63,
+      "cost_year": null,
+      "currency": "USD",
+      "source_title": "2022 Grid Energy Storage Technology Cost and Performance Assessment (PNNL-33283)",
+      "source_url": "https://www.pnnl.gov/sites/default/files/media/file/ESGC%20Cost%20Performance%20Report%202022%20PNNL-33283.pdf",
+      "source_type": "official_dataset",
+      "locator": "Table 4.4, Section 4.1.4.3, p. 22: LFP DC-DC RTE 89.55 percent (2021) and 91.63 percent (2030); AC-AC at inverter level 86.00 / 88.00 percent (bidirectional inverter RTE 0.98 squared); AC-AC at transformer level 82.59 / 84.52 percent",
+      "country": "global",
+      "year": 2022,
+      "accessed": "2026-09-19",
+      "confidence": "high",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "Base is PNNL's DC-DC round-trip efficiency for LFP, 89.55 percent, which excludes the inverter and transformer and is the boundary HOMER uses for the storage component (HOMER's own definition is the DC-to-storage-to-DC efficiency of the bank, with charge and discharge efficiency each set to its square root). High is PNNL's 2030 DC-DC value, 91.63 percent. Low is PNNL's AC-AC value at the inverter level, 86.00 percent, which already contains converter losses and is therefore conservative when entered at the DC boundary; the ATB and NREL 2025 figure of 85 percent is the same AC-side boundary.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "NREL ATB 2024, Utility-Scale Battery Storage",
+          "url": "https://atb.nrel.gov/electricity/2024/utility-scale_battery_storage",
+          "value": "Round-trip efficiency 85 percent",
+          "note": "AC system boundary, includes PCS"
+        },
+        {
+          "title": "Cost Projections for Utility-Scale Battery Storage: 2025 Update (NREL/TP-6A40-93281)",
+          "url": "https://www.nrel.gov/docs/fy25osti/93281.pdf",
+          "value": "Round-trip efficiency 85 percent, defined as the system efficiency through a charge/discharge cycle including cooling and control losses (footnote 3, p. 11; Figure 8 p. 12)",
+          "note": "AC system boundary"
+        },
+        {
+          "title": "HOMER Pro 3.16 documentation, Battery Roundtrip Efficiency",
+          "url": "https://homerenergy.com/products/pro/docs/latest/battery_roundtrip_efficiency.html",
+          "value": "DC-to-storage-to-DC efficiency of the storage bank; typical value approximately 80 percent; charge and discharge efficiency each the square root of the round-trip value",
+          "note": "Generic guidance across chemistries, not LFP-specific"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "battery.minimum_soc",
+      "homer_component": "Storage",
+      "homer_field": "Minimum state of charge (%)",
+      "unit": "%",
+      "base": 20,
+      "low": 20,
+      "high": 40,
+      "cost_year": null,
+      "currency": "USD",
+      "source_title": "2022 Grid Energy Storage Technology Cost and Performance Assessment (PNNL-33283)",
+      "source_url": "https://www.pnnl.gov/sites/default/files/media/file/ESGC%20Cost%20Performance%20Report%202022%20PNNL-33283.pdf",
+      "source_type": "official_dataset",
+      "locator": "Figure 4.3, p. 24, DOD row 80 percent for LFP at every scale and duration, 2021 and 2030; Table 4.3 p. 22 and Table 6.4 p. 125 (LFP cycle life 2,400 at 80 percent DOD, 8,000 at 60 percent DOD); Section 6.1.4 p. 124 ('Li-ion batteries are typically cycled at <= 80 percent DOD to account for degradation')",
+      "country": "global",
+      "year": 2022,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "PNNL's usable depth of discharge for LFP is 80 percent, which is a 20 percent minimum state of charge and is used as base. High (conservative) is 40 percent, the minimum SOC implied by PNNL's alternative 60 percent DOD case, for which cycle life rises from 2,400 to 8,000 cycles; it also sits inside the 30 to 50 percent range HOMER's documentation calls typical. No manufacturer datasheet stating 90 to 100 percent usable DOD for LFP was opened, so the deeper-cycling low bound is left at 20 percent rather than asserted; PNNL notes only that the 90 percent maximum-SOC safety limit applied to NMC does not apply to LFP.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "HOMER Pro 3.16 documentation, Battery Minimum State Of Charge",
+          "url": "https://homerenergy.com/products/pro/docs/latest/battery_minimum_state_of_charge.html",
+          "value": "Typically set to 30-50 percent in order to avoid damaging the storage bank by excessive discharge",
+          "note": "Generic guidance; the Generic 1kWh Li-Ion library default is not printed in the documentation and was not verified"
+        },
+        {
+          "title": "2022 Grid Energy Storage Technology Cost and Performance Assessment (PNNL-33283)",
+          "url": "https://www.pnnl.gov/sites/default/files/media/file/ESGC%20Cost%20Performance%20Report%202022%20PNNL-33283.pdf",
+          "value": "Warranty terms of 10-15 years or 10,000 cycles at 80 percent DOD cited for LFP (Section 4.1.2.2, p. 17)",
+          "note": "Supports 80 percent DOD as the warranted cycling depth"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "battery.float_life",
+      "homer_component": "Storage",
+      "homer_field": "Float life (years)",
+      "unit": "year",
+      "base": 16,
+      "low": 10,
+      "high": 20,
+      "cost_year": null,
+      "currency": "USD",
+      "source_title": "2022 Grid Energy Storage Technology Cost and Performance Assessment (PNNL-33283)",
+      "source_url": "https://www.pnnl.gov/sites/default/files/media/file/ESGC%20Cost%20Performance%20Report%202022%20PNNL-33283.pdf",
+      "source_type": "official_dataset",
+      "locator": "Section 4.1.4.1, p. 21 (calendar life 16 years for LFP, 13 for NMC, unchanged for 2030, from Saft 2021 laboratory data and product data); Figure 4.3, p. 24, Calendar Life row 16 at every scale; Section 4.1.2.2 p. 17 (warranty terms 10-15 years); Table 6.2 p. 122 (project life Li-ion LFP 20-25 years)",
+      "country": "global",
+      "year": 2022,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "Base is PNNL's LFP calendar life of 16 years, which is the time-to-replacement independent of cycling that HOMER's float life represents. Low is the 10-year floor of the LFP warranty terms PNNL cites (10 to 15 years). High is 20 years, the floor of PNNL's assumed LFP project life of 20 to 25 years, which the report reaches with augmentation rather than with a single pack, so it is an optimistic setting for a HOMER float life. NREL's 2025 update and the ATB select 15 years, described as the lower end of published values because no 4-hour system has yet reached that age.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "Cost Projections for Utility-Scale Battery Storage: 2025 Update (NREL/TP-6A40-93281)",
+          "url": "https://www.nrel.gov/docs/fy25osti/93281.pdf",
+          "value": "Lifetime 15 years, 'on the lower end of published values', a conservative choice because existing 4-hour batteries are all new (Section 3, p. 12; Figure 8)",
+          "note": "Plant life with FOM-funded augmentation"
+        },
+        {
+          "title": "NREL ATB 2024, Utility-Scale Battery Storage",
+          "url": "https://atb.nrel.gov/electricity/2024/utility-scale_battery_storage",
+          "value": "15-year lifetime; FOM includes augmentation so the system operates at rated capacity throughout",
+          "note": "Plant life, not pack calendar life"
+        },
+        {
+          "title": "HOMER Pro 3.16 documentation, Battery Float Life",
+          "url": "https://homerenergy.com/products/pro/docs/latest/battery_float_life.html",
+          "value": "Float life is the length of time the storage lasts before replacement; it does not apply when lifetime is limited by throughput only",
+          "note": "Definition only, no default printed"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "converter.efficiency",
+      "homer_component": "Converter",
+      "homer_field": "Efficiency (%)",
+      "unit": "%",
+      "base": 98,
+      "low": 96,
+      "high": 98.5,
+      "cost_year": null,
+      "currency": "USD",
+      "source_title": "California Energy Commission, Solar Equipment Lists: Grid Support Inverter List (Full Data), Solar_Inverters and Battery_Inverters sheets, 'Weighted Efficiency' column",
+      "source_url": "https://solarequipment.energy.ca.gov/Home/InverterSolarList",
+      "source_type": "official_dataset",
+      "locator": "Excel export https://solarequipment.energy.ca.gov/Home/DownloadtoExcel?filename=InvertersList, header row 15, columns 'Maximum Continuous Output Power at Unity Power Factor' (kW) and 'Weighted Efficiency' (%); file header 'Data has not changed since September 11, 2026'",
+      "country": "global",
+      "year": 2026,
+      "accessed": "2026-09-19",
+      "confidence": "high",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "Base 98 % is the median CEC weighted efficiency of listed inverters in the classes relevant to a 0.5 to 2 MW converter: solar inverters 100 to 500 kW (n=98, p10 98.0, median 98.5, p90 99.0) and 500 kW and above (n=123, p10 97.5, median 98.0, p90 98.5), and bidirectional battery inverters 500 kW and above (n=119, p10 97.0, median 98.0, p90 98.5) and 100 to 500 kW (n=64, p10 95.5, median 98.0, p90 98.5); the battery class is the closest analogue to HOMER's bidirectional converter. High 98.5 % is the p90 of the large classes (examples read from the list: SMA SC 4600 UP-US 98.5, Ingeteam INGECON SUN STORAGE 3660TL 98.5, Sungrow SC2500UD-US 98.5, Yaskawa Solectria XGI 1500 98.5). Low 96 % is the PVWatts V5 default nominal inverter efficiency, derived from a CEC-typical inverter (0.9637) in the 2010 to 2013 data. HOMER applies one constant efficiency each to inverter and rectifier and its Converter page prints no default; the 95 % HOMER default named in the brief was not found on any HOMER page opened. The CEC weighted efficiency is a load-weighted average, which is the right analogue to HOMER's constant value.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "NREL PVWatts Version 5 Manual, Table 2 and Section 12",
+          "url": "https://www.nrel.gov/docs/fy14osti/62641.pdf",
+          "value": "Inverter efficiency default 96 %; reference CEC-typical inverter efficiency 0.9637; DC/AC ratio default 1.1",
+          "note": ""
+        },
+        {
+          "title": "HOMER Pro 3.16 documentation, Converter",
+          "url": "https://homerenergy.com/products/pro/docs/latest/converter.html",
+          "value": "Inverter Efficiency 'in %', Rectifier Efficiency 'in %', Relative Capacity 'in %'; 'HOMER assumes the inverter and rectifier efficiencies are constant'",
+          "note": "No default printed."
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "parameter_id": "converter.capital_cost",
+      "homer_component": "Converter",
+      "homer_field": "Capital cost (USD/kW)",
+      "unit": "USD/kW",
+      "base": 372,
+      "low": 290,
+      "high": 750,
+      "cost_year": 2024,
+      "currency": "USD",
+      "source_title": "NREL, Cost Projections for Utility-Scale Battery Storage: 2025 Update (Cole, Ramasamy and Turan, NREL/TP-6A40-93281, June 2025)",
+      "source_url": "https://www.nrel.gov/docs/fy25osti/93281.pdf",
+      "source_type": "official_dataset",
+      "locator": "Section 2 (p. 6), Figure 2 and the sentence 'the energy cost is $241/kWh, and the power cost is $379/kW adjusted down by $7/kW for a final power cost of $372/kW' (2024 USD; fit y = 240.8x + 379.16); cost-category definitions items 1 to 9 (p. 3), item 2 'Battery bi-directional inverter: Cost to the installer for equipment that converts direct current to alternating current, as delivered'; Table 3 breakdown (p. 18)",
+      "country": "global",
+      "year": 2025,
+      "accessed": "2026-09-19",
+      "confidence": "medium",
+      "evidence_role": "literature_supported",
+      "evidence_tier": "baseline_generic",
+      "validation_status": "candidate",
+      "responsible": "Mohammad Abusalim",
+      "basis": "Base 372 USD/kW is the power-proportional component of NREL's Q1 2024 bottom-up utility-scale BESS cost, obtained by fitting total cost against duration from one to ten hours: it is everything that scales with kW, meaning the bidirectional inverter as delivered plus the transformer, switchgear, disconnects, grounding and the power shares of installation labor, sales tax, contingency, developer overhead and profit, which is the closest published analogue to HOMER's installed bidirectional converter per kW AC. Low 290 USD/kW is the NREL Q1 2022 benchmark's modeled market price for a commercial battery-based bidirectional inverter, 0.29 USD/Wac ex-factory in 2021 USD (MSP 0.23 USD/Wac), hardware only with no installation or electrical BOS; PV-only inverters are far cheaper (three-phase string 0.06 to 0.07 USD/Wac at 200 to 500 kW, utility central 0.04 to 0.05 USD/Wac), so a grid-tie PV inverter alone sits below the low bound and a HOMER model that gives the PV its own dedicated inverter should price it from those figures instead. High 750 USD/kW is the value in the HOMER Pro Converter documentation example ('the capital cost and the replacement cost of the converter are specified at $750/kW'), illustrative rather than benchmarked, standing for a small fully installed converter with its own switchgear. The PNNL PCS figures named in the brief could not be read: the lithium-ion cost page renders them as Tableau images with no text and the PNNL-33283 PDF host did not connect.",
+      "regional_note": "",
+      "secondary_sources": [
+        {
+          "title": "NREL Q1 2022 benchmark (Ramasamy et al. 2022), modeled cost parameter tables",
+          "url": "https://www.nrel.gov/docs/fy22osti/83586.pdf",
+          "value": "Ex-factory inverter prices, 2021 USD: residential microinverter 0.36 MSP / 0.53 MMP USD/Wac (ILR 1.21); commercial three-phase string 0.06 MSP / 0.07 MMP USD/Wac (ILR 1.23); utility central 0.05 MSP / 0.04 MMP USD/Wac (ILR 1.34); commercial battery-based inverter 0.23 MSP / 0.29 MMP USD/Wac; commercial storage battery central inverter 0.05 / 0.06 USD/Wac; utility bidirectional inverter 0.07 USD/Wac",
+          "note": "Hardware price to the first buyer, before installation, electrical BOS, tax and margin."
+        },
+        {
+          "title": "HOMER Pro 3.16 documentation, Converter, Cost Curve",
+          "url": "https://homerenergy.com/products/pro/docs/latest/converter.html",
+          "value": "'the capital cost and the replacement cost of the converter are specified at $750/kW. The operating and maintenance cost is specified as zero'; second example drops to 550 USD/kW above 2 kW",
+          "note": "Screenshot example, not a benchmark; the page says costs must 'include all costs associated with the converter, including installation'."
+        },
+        {
+          "title": "NREL ATB 2024, Utility-Scale Battery Storage",
+          "url": "https://atb.nrel.gov/electricity/2024/utility-scale_battery_storage",
+          "value": "'Total System Cost ($/kW) = Battery Pack Cost ($/kWh) x Storage Duration (hr) + BOS Cost ($/kW)'; 2022 cost breakdown from Ramasamy et al. 2023 in 2022$; FOM 2.5% of capital cost in $/kW; 15-year lifetime",
+          "note": "The BOS Cost ($/kW) term, which carries the inverter, is printed only in the ATB data spreadsheet and Figure 1 image, not in the page text. Read from the Wayback capture of 2026-01-25."
+        },
+        {
+          "title": "NREL, Cost Projections for Utility-Scale Battery Storage: 2023 Update (Cole and Karmakar, NREL/TP-6A40-85332)",
+          "url": "https://www.nrel.gov/docs/fy23osti/85332.pdf",
+          "value": "2022 4-hour system 482 USD/kWh (2022$); 'the inverter costs scale according to the power capacity (i.e., kW)'; power and energy split shown in Figure 4 only",
+          "note": "Superseded by the 2025 update above, whose 2024 4-hour cost is 334 USD/kWh (2024$)."
+        },
+        {
+          "title": "Lazard 2026 LCOE+, LCOS v11.0 assumptions",
+          "url": "https://www.lazard.com/media/kcfconhf/lazards-lcoeplus_vf.pdf",
+          "value": "Storage 'Capital Cost (incl. Inverter)' 270 to 365 USD/kWh for a 50 MW / 200 MWh system",
+          "note": "Inverter not separable."
+        },
+        {
+          "title": "PNNL, Energy Storage Cost and Performance Database, Lithium-ion Battery (LFP and NMC)",
+          "url": "https://www.pnnl.gov/projects/esgc-cost-performance/lithium-ion-battery",
+          "value": "not readable",
+          "note": "Page content is two Tableau dashboard images; the reports page redirects to an access-denied host and the PNNL-33283 PDF did not download. No PCS number carried."
+        }
+      ],
+      "notes": "Paired with battery.capital_cost, which excludes the power-proportional cost for this reason; the two together cost the power conversion system exactly once. Base was derived independently twice from NREL/TP-6A40-93281 and agreed at 372 USD/kW."
+    }
+  ]
+}

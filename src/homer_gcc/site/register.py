@@ -52,6 +52,10 @@ TECHNOLOGY_BY_PREFIX = {
     "site": "Site resource",
     "economics": "",
     "resilience": "",
+    "pv": "PV",
+    "generator": "Diesel generator",
+    "battery": "Lithium-ion battery",
+    "converter": "Converter",
 }
 
 REQUIRED_REGISTER_FIELDS = (
@@ -317,8 +321,17 @@ def coverage_report(
     register: dict[str, Any],
     scenario: dict[str, Any],
     literature_ids: set[str] | None = None,
+    technology: dict[str, str] | None = None,
 ) -> dict[str, Any]:
+    """Coverage of the scenario contract.
+
+    ``literature_ids`` are parameters with provisional evidence from the evidence
+    pipeline; ``technology`` maps parameter IDs to the evidence tier of a
+    technology register (``baseline_generic`` or ``evidence_updated``). Pipeline
+    evidence takes precedence over a technology register in the reported status.
+    """
     literature = set(literature_ids or set())
+    technology = dict(technology or {})
     site_ids = {item["parameter_id"] for item in register.get("parameters", [])}
     rows = []
     gaps = []
@@ -329,6 +342,8 @@ def coverage_report(
             status = "researcher_assumption_provided" if role == "researcher_assumption" else "site_layer_candidate"
         elif role == "literature_supported" and parameter_id in literature:
             status = "literature_provisional"
+        elif role == "literature_supported" and parameter_id in technology:
+            status = f"technology_{technology[parameter_id]}_candidate"
         else:
             status = "gap"
             gaps.append(parameter_id)
@@ -340,6 +355,7 @@ def coverage_report(
         "gaps": gaps,
         "site_layer_rows": sum(1 for row in rows if row["status"] in {"site_layer_candidate", "researcher_assumption_provided"}),
         "literature_rows": sum(1 for row in rows if row["status"] == "literature_provisional"),
+        "technology_rows": sum(1 for row in rows if row["status"].startswith("technology_")),
         "rows": rows,
     }
 
@@ -349,9 +365,13 @@ def literature_ids_from_aggregates(payload: dict[str, Any]) -> set[str]:
     ids: set[str] = set()
     rows = payload.get("rows") or payload.get("parameters") or []
     for row in rows:
-        if row.get("provisional_evidence_available") or row.get("status") in {"literature_provisional", "covered"}:
-            if row.get("parameter_id"):
-                ids.add(row["parameter_id"])
+        covered = (
+            row.get("coverage_status") == "provisional_evidence_available"
+            or row.get("provisional_evidence_available")
+            or row.get("status") in {"literature_provisional", "covered"}
+        )
+        if covered and row.get("parameter_id"):
+            ids.add(row["parameter_id"])
     for key in ("literature_supported_ids", "covered_ids"):
         for value in payload.get(key, []) or []:
             ids.add(str(value))

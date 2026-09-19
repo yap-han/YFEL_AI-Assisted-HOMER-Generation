@@ -12,6 +12,7 @@
   "responsible": "Mohammad Abusalim",
   "archetype": "archetypes/ras_intensive_marine.json",
   "register": "site_register.saudi_allith.json",
+  "technology_register": "../technology/technology_register.baseline_generic.json",
   "benchmarks": "benchmarks.json",
   "production_t_per_year": 500,
   "site_note": "Representative coastal location in the Kingdom's largest aquaculture cluster (Al-Lith, Red Sea). Coordinates are a representative point, not a specific farm.",
@@ -24,10 +25,22 @@
   },
   "load": {
     "seed": 20260919,
-    "noise": {"pumps": 0.03, "cooling": 0.08, "other": 0.05},
-    "noise_clip": [0.8, 1.2],
+    "noise": {
+      "pumps": 0.03,
+      "cooling": 0.08,
+      "other": 0.05
+    },
+    "noise_clip": [
+      0.8,
+      1.2
+    ],
     "low_high_scale": 0.15
   },
-  "grid": {"outage_seed": 20260919},
-  "sensitivity": {"monte_carlo_draws": 200, "seed": 20260919}
+  "grid": {
+    "outage_seed": 20260919
+  },
+  "sensitivity": {
+    "monte_carlo_draws": 200,
+    "seed": 20260919
+  }
 }

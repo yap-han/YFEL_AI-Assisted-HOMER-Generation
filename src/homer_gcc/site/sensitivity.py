@@ -76,19 +76,21 @@ def build_sensitivity_table(
                 "note": "Or import ghi_low.txt and ghi_high.txt; temperature files for the same years are provided",
             }
         )
-    rows.append(
-        {
-            "homer_field": "PV > Derating factor (%)",
-            "parameter_id": "pv.derating_factor",
-            "unit": "%",
-            "low": 72.0,
-            "base": 80.0,
-            "high": 88.0,
-            "low_basis": "heavy soiling, infrequent cleaning (literature side)",
-            "high_basis": "weekly cleaning, low soiling (literature side)",
-            "note": "literature_side: the evidence pipeline owns this parameter; values here are placeholders for the sensitivity grid",
-        }
-    )
+    register_ids = {item["parameter_id"] for item in register.get("parameters", [])}
+    if "pv.derating_factor" not in register_ids:
+        rows.append(
+            {
+                "homer_field": "PV > Derating factor (%)",
+                "parameter_id": "pv.derating_factor",
+                "unit": "%",
+                "low": 72.0,
+                "base": 80.0,
+                "high": 88.0,
+                "low_basis": "heavy soiling, infrequent cleaning (literature side)",
+                "high_basis": "weekly cleaning, low soiling (literature side)",
+                "note": "literature_side: the evidence pipeline owns this parameter; values here are placeholders for the sensitivity grid",
+            }
+        )
     for item in register.get("parameters", []):
         rows.append(
             {

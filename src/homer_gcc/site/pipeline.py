@@ -31,6 +31,14 @@ from .register import (
 )
 from .sensitivity import SENSITIVITY_COLUMNS, build_sensitivity_table, monte_carlo_cases, percentiles
 from .spec import load_site_spec, resolve
+from .technology import (
+    HOMER_INPUT_COLUMNS,
+    homer_input_sheet,
+    merge_registers,
+    technology_coverage,
+    tier_map,
+    validate_technology_register,
+)
 from .weather import load_weather_years, monthly_summary, parse_year_range, select_reference_years
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -45,6 +53,24 @@ def _now() -> str:
 
 def _write_csv_rows(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> Path:
     return write_csv(path, rows, fieldnames)
+
+
+def load_technology_register(
+    spec: dict[str, Any],
+    spec_base: Path,
+    override: str | Path | None = None,
+    *,
+    disabled: bool = False,
+) -> dict[str, Any] | None:
+    """The technology register named on the command line, else in the spec, else none."""
+    if disabled:
+        return None
+    if override:
+        return load_json(Path(override).resolve())
+    configured = spec.get("technology_register")
+    if configured:
+        return load_json(resolve(spec_base, configured))
+    return None
 
 
 def run_weather_stage(
@@ -231,6 +257,7 @@ def run_export_stage(
     *,
     scenarios: tuple[str, ...] = ("base",),
     literature_ids: set[str] | None = None,
+    technology_register: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     register = load_json(resolve(spec_base, spec["register"]))
     accessed = _now()
@@ -248,6 +275,35 @@ def run_export_stage(
         raise ValueError("Site register is invalid: " + "; ".join(errors))
     write_json(output_dir / "site_register_resolved.json", resolved)
 
+    technology_exports: dict[str, Any] = {}
+    if technology_register:
+        errors = validate_technology_register(technology_register, ontology, scenario)
+        if errors:
+            raise ValueError("Technology register is invalid: " + "; ".join(errors))
+        technology_resolved = {**technology_register, "resolved_at": accessed}
+        write_json(output_dir / "technology_register_resolved.json", technology_resolved)
+        technology_proposed = to_proposed_parameter_rows(
+            technology_register,
+            ontology,
+            scenario,
+            scenario_id=str(spec["scenario_id"]),
+            context_location=str(technology_register.get("context_location", "generic")),
+            entered_by=str(technology_register.get("entered_by", technology_register.get("register_id", "technology_register"))),
+            scenarios=scenarios,
+        )
+        technology_proposed_path = _write_csv_rows(
+            output_dir / "proposed_parameters_technology.csv", technology_proposed, PROPOSED_COLUMNS
+        )
+        technology_exports = {
+            "technology_register_id": technology_register.get("register_id"),
+            "technology_evidence_tier": technology_register.get("evidence_tier"),
+            "technology_register_json": str(output_dir / "technology_register_resolved.json"),
+            "technology_proposed_parameters_csv": str(technology_proposed_path),
+            "technology_proposed_rows": len(technology_proposed),
+            "technology_coverage": technology_coverage(technology_register, scenario),
+        }
+
+    combined = merge_registers(resolved, technology_register)
     proposed = to_proposed_parameter_rows(
         resolved,
         ontology,
@@ -258,12 +314,14 @@ def run_export_stage(
         scenarios=scenarios,
     )
     proposed_path = _write_csv_rows(output_dir / "proposed_parameters_site.csv", proposed, PROPOSED_COLUMNS)
-    master = to_master_register_rows(resolved, ontology)
+    master = to_master_register_rows(combined, ontology)
     master_path = _write_csv_rows(output_dir / "master_parameter_register.csv", master, MASTER_COLUMNS)
-    coverage = coverage_report(resolved, scenario, literature_ids)
+    coverage = coverage_report(resolved, scenario, literature_ids, tier_map(technology_register))
     write_json(output_dir / "scenario_coverage_site.json", coverage)
+    sheet = homer_input_sheet(scenario, ontology, resolved, technology_register)
+    sheet_path = _write_csv_rows(output_dir / "homer_input_sheet.csv", sheet, HOMER_INPUT_COLUMNS)
 
-    table = build_sensitivity_table(resolved, load_summary, weather, load_scale=float(load_summary.get("low_high_scale", 0.15)))
+    table = build_sensitivity_table(combined, load_summary, weather, load_scale=float(load_summary.get("low_high_scale", 0.15)))
     sensitivity_path = _write_csv_rows(output_dir / "sensitivity_table.csv", table, SENSITIVITY_COLUMNS)
     sensitivity_config = spec.get("sensitivity", {})
     cases = monte_carlo_cases(table, int(sensitivity_config.get("monte_carlo_draws", 200)), int(sensitivity_config.get("seed", 1)))
@@ -293,7 +351,11 @@ def run_export_stage(
         "proposed_parameters_csv": str(proposed_path),
         "proposed_rows": len(proposed),
         "master_register_csv": str(master_path),
-        "coverage": {key: coverage[key] for key in ("required", "covered", "gaps", "site_layer_rows", "literature_rows")},
+        "master_register_rows": len(master),
+        "homer_input_sheet_csv": str(sheet_path),
+        "homer_input_sheet_rows": len(sheet),
+        **technology_exports,
+        "coverage": {key: coverage[key] for key in ("required", "covered", "gaps", "site_layer_rows", "literature_rows", "technology_rows")},
         "sensitivity_csv": str(sensitivity_path),
         "sensitivity_rows": len(table),
         "monte_carlo_csv": str(cases_path),
@@ -303,7 +365,36 @@ def run_export_stage(
     }
 
 
-def write_site_summary(output_dir: Path, spec: dict[str, Any], weather: dict[str, Any], load_summary: dict[str, Any], exports: dict[str, Any]) -> Path:
+def _technology_section(technology_register: dict[str, Any] | None) -> str:
+    if not technology_register:
+        return (
+            "## Technology parameters\n\n"
+            "No technology register was supplied; the 19 literature-supported inputs come from the evidence pipeline.\n"
+        )
+    rows = "\n".join(
+        f"| {item['parameter_id']} | {item['unit']} | {item['low']} | {item['base']} | {item['high']} | "
+        f"{item.get('confidence', '')} | {item['source_title'][:70]} |"
+        for item in technology_register.get("parameters", [])
+    )
+    return f"""## Technology parameters (register `{technology_register.get('register_id')}`, tier `{technology_register.get('evidence_tier')}`)
+
+Generic values from public techno-economic datasets and software documentation. They make the scenario runnable and are the control arm; the evidence pipeline's GCC and aquaculture values are the treatment arm. Every row is a candidate.
+
+| Parameter | Unit | Low | Base | High | Confidence | Source |
+|---|---|---|---|---|---|---|
+{rows}
+"""
+
+
+def write_site_summary(
+    output_dir: Path,
+    spec: dict[str, Any],
+    weather: dict[str, Any],
+    load_summary: dict[str, Any],
+    exports: dict[str, Any],
+    *,
+    technology_register: dict[str, Any] | None = None,
+) -> Path:
     years = weather["years"]
     annual = weather["annual_ghi_kwh_m2"]
     checks = "\n".join(
@@ -315,6 +406,19 @@ def write_site_summary(output_dir: Path, spec: dict[str, Any], weather: dict[str
         f"PVGIS TMY cross-check: {crosscheck['status']} ({crosscheck['difference_pct']:+.1f} percent against the NASA ten-year mean)."
         if crosscheck else "PVGIS cross-check not run."
     )
+    technology_section = _technology_section(technology_register)
+    coverage = exports["coverage"]
+    if coverage.get("technology_rows"):
+        coverage_line = (
+            f"Scenario coverage: {coverage['covered']} of {coverage['required']} required inputs have a candidate: "
+            f"{coverage['site_layer_rows']} from the site layer, {coverage['technology_rows']} from the technology register, "
+            f"{coverage['literature_rows']} from the evidence pipeline; gaps: {len(coverage['gaps'])}."
+        )
+    else:
+        coverage_line = (
+            f"Scenario coverage: {coverage['covered']} of {coverage['required']} required inputs have a site-layer candidate or "
+            f"assumption; the remaining {len(coverage['gaps'])} are literature-side parameters owned by the evidence pipeline."
+        )
     text = f"""# Site data summary: {spec.get('site_name', spec['site_id'])}
 
 Generated by {SITE_LAYER_VERSION}. Every value is a candidate for human review.
@@ -346,6 +450,7 @@ Generated by {SITE_LAYER_VERSION}. Every value is a candidate for human review.
 |---|---|---|---|
 {checks}
 
+{technology_section}
 ## HOMER entry map
 
 | HOMER dialog | File or value |
@@ -355,10 +460,11 @@ Generated by {SITE_LAYER_VERSION}. Every value is a candidate for human review.
 | Solar GHI Resource > Import time series (kW/m2) | `weather/ghi_base.txt` |
 | Temperature Resource > Import time series (degC) | `weather/temperature_base.txt` |
 | Wind Resource > Import time series (m/s), anemometer 10 m | `weather/wind_base.txt` |
-| Grid, Fuel, Economics, Constraints | `master_parameter_register.csv` base column; low and high in `sensitivity_table.csv` |
-| Evidence pipeline import | `proposed_parameters_site.csv` via `import-proposals` |
+| PV, Generator, Storage, Converter components | `homer_input_sheet.csv` rows with origin `baseline_generic` (base column); low and high in `sensitivity_table.csv` |
+| Grid, Fuel, Economics, Constraints | `homer_input_sheet.csv` rows with origin `site_register` or `researcher_assumption`; also `master_parameter_register.csv` |
+| Evidence pipeline import | `proposed_parameters_site.csv` and `proposed_parameters_technology.csv` via `import-proposals` |
 
-Scenario coverage: {exports['coverage']['covered']} of {exports['coverage']['required']} required inputs have a site-layer candidate or assumption; the remaining {len(exports['coverage']['gaps'])} are literature-side parameters owned by the evidence pipeline.
+{coverage_line}
 """
     path = output_dir / "SITE_SUMMARY.md"
     path.write_text(text, encoding="utf-8")
@@ -381,6 +487,8 @@ def run_site_pipeline(
     llm_config: str | Path | None = None,
     use_llm_draft: bool = False,
     reset: bool = False,
+    technology_register: str | Path | None = None,
+    no_technology_register: bool = False,
 ) -> dict[str, Any]:
     spec, spec_base = load_site_spec(spec_path)
     output = Path(output_dir)
@@ -392,6 +500,7 @@ def run_site_pipeline(
     output.mkdir(parents=True, exist_ok=True)
     ontology = load_json(ontology_path or DEFAULT_ONTOLOGY)
     scenario = load_json(scenario_path or DEFAULT_SCENARIO)
+    technology = load_technology_register(spec, spec_base, technology_register, disabled=no_technology_register)
 
     weather = run_weather_stage(
         spec,
@@ -425,8 +534,9 @@ def run_site_pipeline(
         load_summary,
         scenarios=tuple(part.strip() for part in scenarios.split(",") if part.strip()),
         literature_ids=literature_ids,
+        technology_register=technology,
     )
-    summary_path = write_site_summary(output, spec, weather, load_summary, exports)
+    summary_path = write_site_summary(output, spec, weather, load_summary, exports, technology_register=technology)
 
     outputs = [Path(entry["path"]) for entry in {**weather["files"], **load_summary["files"]}.values()]
     outputs += [
@@ -438,6 +548,7 @@ def run_site_pipeline(
         output / "site_register_resolved.json",
         output / "proposed_parameters_site.csv",
         output / "master_parameter_register.csv",
+        output / "homer_input_sheet.csv",
         output / "scenario_coverage_site.json",
         output / "sensitivity_table.csv",
         output / "monte_carlo_cases.csv",
@@ -448,10 +559,23 @@ def run_site_pipeline(
     ]
     if pvgis:
         outputs.append(output / "weather" / "weather_crosscheck.json")
+    if technology:
+        outputs += [output / "technology_register_resolved.json", output / "proposed_parameters_technology.csv"]
     sources = [
         {key: value for key, value in record.items() if key in ("source", "path", "url", "year", "accessed")}
         for record in weather["_provenance"]
     ]
+    if technology:
+        sources += [
+            {
+                "source": f"technology_register:{technology.get('register_id')}",
+                "url": item.get("source_url", ""),
+                "year": item.get("year", ""),
+                "accessed": item.get("accessed", ""),
+                "parameter_id": item["parameter_id"],
+            }
+            for item in technology.get("parameters", [])
+        ]
     manifest = build_manifest(
         spec=spec,
         spec_path=Path(spec_path).resolve(),
@@ -464,6 +588,13 @@ def run_site_pipeline(
             "pvgis_crosscheck": weather.get("pvgis_crosscheck"),
             "benchmark_status": load_summary["benchmark_status"],
             "llm_inventory": {key: llm_result[key] for key in ("status", "provider", "model", "output")} if llm_result else None,
+            "technology_register": {
+                "register_id": technology.get("register_id"),
+                "evidence_tier": technology.get("evidence_tier"),
+                "rows": len(technology.get("parameters", [])),
+            }
+            if technology
+            else None,
         },
     )
     write_json(output / "run_manifest.json", manifest)
