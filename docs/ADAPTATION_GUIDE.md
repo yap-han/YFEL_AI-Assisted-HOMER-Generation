@@ -98,4 +98,4 @@ The same database can register HOMER, MATLAB, Python or another model because th
 
 ## 9. Reuse the site layer
 
-The site layer is location-agnostic: copy `config/site/site.saudi_allith.example.json`, change the coordinates, UTC offset, production and register file, and supply an archetype whose `ontology_id` values exist in your load family. `site-generate` then produces the HOMER files and the register exports for the new site without code changes.
+The site layer is location-agnostic: copy `config/site/site.saudi_allith.example.json`, change the coordinates, UTC offset, production and register file, and supply an archetype whose `ontology_id` values exist in your load family. `site-generate` then produces the HOMER files and the register exports for the new site without code changes. The baseline technology register is site-independent and carries over unchanged; a treatment register for another region is a copy of the evidence-updated template filled from that region's literature.

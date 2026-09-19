@@ -19,9 +19,16 @@ Nothing the site layer produces is approved evidence. Every register value carri
 | `site/sensitivity.py` | Sensitivity table with the basis of every bound; seeded triangular Monte Carlo cases |
 | `site/outages.py` | Seeded outage schedule from mean frequency and mean repair time |
 | `site/llm_inventory.py` | Optional AI-drafted inventory using the pipeline's connector and fixture pattern; output is always a candidate |
+| `site/technology.py` | Technology register for the 19 literature-supported inputs in two tiers (`baseline_generic`, `evidence_updated`): validation, merge, comparison, the consolidated HOMER input sheet |
 | `site/manifest.py` | Run manifest with source URLs, access times and SHA-256 of every input and output |
 | `site/pipeline.py` | Orchestration and the six-site sweep |
 | `site/cli_site.py` | The `site-*` subcommands |
+
+## The technology register and the two-arm experiment
+
+The 19 `literature_supported` inputs are the evidence pipeline's territory, but a scenario cannot run without them. `config/technology/technology_register.baseline_generic.json` supplies them as cited, bounded candidates from public techno-economic datasets and HOMER documentation (NREL ATB, IRENA, PNNL, BloombergNEF, manufacturer data), deliberately generic. The spec names it under `technology_register`, so `site-generate` folds it into the master register, the sensitivity table, the Monte Carlo cases, the coverage report and a consolidated `homer_input_sheet.csv` with all 32 inputs in contract order.
+
+That register is the control arm of the experiment in `docs/EXPERIMENTAL_DESIGN.md`. The evidence pipeline's approved GCC and aquaculture values, or a manual extraction entered in `technology_register.evidence_updated.template.json`, are the treatment arm. `site-compare-registers` reports which inputs moved and whether they left the baseline bounds; `site-compare-results` compares two exported HOMER rankings. Pass `--no-technology-register` to export the site layer alone.
 
 The package stays standard-library only.
 
@@ -53,6 +60,22 @@ PYTHONPATH=src python -m homer_gcc site-coverage \
   --register output/site/site_register_resolved.json \
   --literature-ids pv.capital_cost,pv.replacement_cost,pv.om_cost,pv.derating_factor,pv.lifetime,generator.capital_cost,generator.replacement_cost,generator.om_cost,generator.electrical_efficiency,generator.operating_lifetime,fuel.generator_minimum_load,battery.capital_cost,battery.replacement_cost,battery.om_cost,battery.round_trip_efficiency,battery.minimum_soc,battery.float_life,converter.efficiency,converter.capital_cost
 
+# Coverage with the baseline technology register (32 of 32 before the evidence pipeline has run)
+PYTHONPATH=src python -m homer_gcc site-coverage \
+  --register output/site/site_register_resolved.json \
+  --technology-register config/technology/technology_register.baseline_generic.json
+
+# Control versus treatment: which of the 19 inputs moved, and did they leave the baseline bounds
+PYTHONPATH=src python -m homer_gcc site-compare-registers \
+  --a config/technology/technology_register.baseline_generic.json \
+  --b config/technology/technology_register.evidence_updated.v1.json \
+  --output output/site/register_comparison.csv
+
+# Stage 8 standalone: compare two exported HOMER architecture rankings
+PYTHONPATH=src python -m homer_gcc site-compare-results \
+  --baseline evidence/homer_results/baseline.json --updated evidence/homer_results/updated.json \
+  --output output/site/energy_mix_impact.json
+
 # Phase 2 country sensitivity: weather for six GCC reference sites
 PYTHONPATH=src python -m homer_gcc site-sweep --output output/site/sweep
 
@@ -80,9 +103,12 @@ PYTHONPATH=src python -m homer_gcc site-generate --spec config/site/site.saudi_a
 | `load/load_disaggregated_base.csv` | Hour by hour, per class and per equipment item | |
 | `load/inventory_used.json` | The exact inventory and seed behind the files | |
 | `site_register_resolved.json` | Register with the pipeline-derived rows added | |
-| `proposed_parameters_site.csv` | Evidence-pipeline format, importable with `import-proposals` | |
-| `master_parameter_register.csv` | Team format: ten columns from the methodology note | |
-| `scenario_coverage_site.json` | 32-input coverage: site-layer candidates, literature, gaps | |
+| `technology_register_resolved.json` | The technology register used in this run, with its tier | |
+| `homer_input_sheet.csv` | All 32 contract inputs in order, plus supporting rows, each with origin, low, base, high, source, locator and status | The one sheet to build the HOMER project from |
+| `proposed_parameters_site.csv` | Site rows in the evidence-pipeline format, importable with `import-proposals` | |
+| `proposed_parameters_technology.csv` | Technology rows in the same format, through the same gate | |
+| `master_parameter_register.csv` | Team format: ten columns from the methodology note, site and technology rows together | |
+| `scenario_coverage_site.json` | 32-input coverage: site-layer candidates, technology-register candidates, literature, gaps | |
 | `sensitivity_table.csv` | Low, base and high for every input with the basis of each bound | HOMER sensitivity variables |
 | `monte_carlo_cases.csv`, `monte_carlo_summary.json` | 200 seeded triangular draws and P10/P50/P90 | Uncertainty discussion |
 | `grid_outage_schedule.txt`, `outage_stats.json` | One seeded realisation of the outage statistics and its stats | Grid, Reliability: enter frequency and repair time from the register |
