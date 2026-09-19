@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "description": "Representative coastal aquaculture locations, one per GCC state, for the Phase 2 country sensitivity sweep. Coordinates are representative points near known aquaculture activity, not specific farms.",
+  "sites": [
+    {"site_id": "sa_allith", "country": "Saudi Arabia", "site_name": "Al-Lith, Red Sea coast", "latitude": 20.15, "longitude": 40.27, "utc_offset_hours": 3},
+    {"site_id": "ae_dibba", "country": "United Arab Emirates", "site_name": "Dibba Al-Fujairah, Gulf of Oman coast", "latitude": 25.60, "longitude": 56.27, "utc_offset_hours": 4},
+    {"site_id": "om_duqm", "country": "Oman", "site_name": "Duqm, Arabian Sea coast", "latitude": 19.65, "longitude": 57.70, "utc_offset_hours": 4},
+    {"site_id": "qa_alkhor", "country": "Qatar", "site_name": "Al Khor, Gulf coast", "latitude": 25.68, "longitude": 51.50, "utc_offset_hours": 3},
+    {"site_id": "kw_shuwaikh", "country": "Kuwait", "site_name": "Shuwaikh, Kuwait Bay", "latitude": 29.35, "longitude": 47.92, "utc_offset_hours": 3},
+    {"site_id": "bh_rashayan", "country": "Bahrain", "site_name": "Ras Hayan, south-east coast", "latitude": 25.95, "longitude": 50.60, "utc_offset_hours": 3}
+  ]
+}

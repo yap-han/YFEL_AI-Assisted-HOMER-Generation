@@ -1,0 +1,323 @@
+{
+  "schema_version": "1.0",
+  "archetype_id": "ras_intensive_marine",
+  "label": "Intensive land-based marine recirculating aquaculture system (RAS), warm-water finfish",
+  "system_type": "recirculating_aquaculture_system",
+  "reference_production_t_per_year": 500,
+  "scale_with_production": true,
+  "status": "candidate",
+  "authored_by": "site layer, drafted with AI assistance from the literature anchors below; requires aquaculture-engineering review before research use",
+  "water_temperature": {
+    "mode": "setpoint",
+    "setpoint_c": 28.0
+  },
+  "biomass": {
+    "mode": "staggered",
+    "amplitude": 0.1,
+    "peak_doy": 300,
+    "note": "Staggered stocking keeps standing biomass within about +/-10 percent of its annual mean; pumping and oxygen demand follow it with the exponents below."
+  },
+  "aeration_diurnal": {
+    "amplitude": 0.15,
+    "peak_hour": 4,
+    "note": "Oxygen demand and degassing peak before dawn when photosynthetic oxygen is absent and post-feeding metabolic load accumulates."
+  },
+  "metabolic": {
+    "k_per_degc": 0.02,
+    "t_ref_c": 28.0,
+    "clip": [
+      0.85,
+      1.15
+    ]
+  },
+  "cooling": {
+    "t_set_c": 28.0,
+    "k_th_kw_per_degc": 70.0,
+    "q_base_kw_th": 310.0,
+    "cop_nominal": 3.2,
+    "cop_derate_per_degc_above_35": 0.02,
+    "cop_floor": 0.6,
+    "note": "Thermal load = base heat gain from pumps, blowers and building envelope plus a linear term in ambient excess over the 28 degC setpoint; converted to electricity through a chiller COP derated above 35 degC. Calibrated so cooling carries 20 to 35 percent of annual energy at the reference site, the GCC band reported by Salameh et al. (2025) in the team literature review."
+  },
+  "equipment": [
+    {
+      "id": "circulation_pumps",
+      "label": "Main recirculation pumps",
+      "ontology_id": "load.circulation_pump_power",
+      "rated_kw": 30.0,
+      "quantity": 5,
+      "duty_cycle": 0.85,
+      "driver": "constant",
+      "biomass_scaling": 0.3,
+      "criticality": "critical",
+      "noise_class": "pumps",
+      "source": {
+        "basis": "RAS design practice: pumping is the largest continuous load, up to 45 percent of on-site energy in the audits reviewed by Badiola et al. (2018)",
+        "ref": "Badiola et al. 2018, Aquacultural Engineering 81, 57-70, doi:10.1016/j.aquaeng.2018.03.003",
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "blowers",
+      "label": "Aeration and degassing blowers",
+      "ontology_id": "load.aeration_power",
+      "rated_kw": 30.0,
+      "quantity": 4,
+      "duty_cycle": 0.85,
+      "driver": "diurnal_do",
+      "biomass_scaling": 0.5,
+      "criticality": "critical",
+      "noise_class": "other",
+      "source": {
+        "basis": "Aeration and oxygenation 9 to 37 percent of RAS energy (Badiola et al. 2018); diurnal shape from dissolved-oxygen dynamics",
+        "ref": "Badiola et al. 2018",
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "oxygen_psa",
+      "label": "Pressure-swing oxygen generators",
+      "ontology_id": "load.oxygenation_power",
+      "rated_kw": 22.0,
+      "quantity": 4,
+      "duty_cycle": 0.75,
+      "driver": "diurnal_do",
+      "biomass_scaling": 0.7,
+      "criticality": "critical",
+      "noise_class": "other",
+      "source": {
+        "basis": "On-site PSA oxygen at about 1 kWh per kg O2 sized for peak biomass",
+        "ref": "Badiola et al. 2018; Ayuso-Virgili et al. 2023, doi:10.1016/j.aquaeng.2023.102330",
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "drum_filters",
+      "label": "Microscreen drum filters",
+      "ontology_id": "load.filtration_power",
+      "rated_kw": 2.2,
+      "quantity": 8,
+      "duty_cycle": 0.9,
+      "driver": "constant",
+      "biomass_scaling": 0.2,
+      "criticality": "essential",
+      "noise_class": "other",
+      "source": {
+        "basis": "Manufacturer class ratings for 60 to 90 micron drum filters at this flow",
+        "ref": "manufacturer datasheet class",
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "backwash_and_biofilter",
+      "label": "Backwash pumps and moving-bed biofilter aeration",
+      "ontology_id": "load.filtration_power",
+      "rated_kw": 7.5,
+      "quantity": 4,
+      "duty_cycle": 0.55,
+      "driver": "constant",
+      "biomass_scaling": 0.3,
+      "criticality": "essential",
+      "noise_class": "pumps",
+      "source": {
+        "basis": "Biofilter aeration and periodic backwash",
+        "ref": "Badiola et al. 2018",
+        "confidence": "low"
+      }
+    },
+    {
+      "id": "uv_units",
+      "label": "UV disinfection",
+      "ontology_id": "load.disinfection_power",
+      "rated_kw": 4.0,
+      "quantity": 6,
+      "duty_cycle": 1.0,
+      "driver": "constant",
+      "biomass_scaling": 0.0,
+      "criticality": "essential",
+      "noise_class": "other",
+      "source": {
+        "basis": "Medium-pressure UV on the recirculation loop, continuous",
+        "ref": "manufacturer datasheet class",
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "ozone_generators",
+      "label": "Ozone generation and contact",
+      "ontology_id": "load.disinfection_power",
+      "rated_kw": 15.0,
+      "quantity": 2,
+      "duty_cycle": 0.6,
+      "driver": "constant",
+      "biomass_scaling": 0.3,
+      "criticality": "essential",
+      "noise_class": "other",
+      "source": {
+        "basis": "Ozone for water clarity in marine RAS, modulated with biomass",
+        "ref": "Badiola et al. 2018",
+        "confidence": "low"
+      }
+    },
+    {
+      "id": "intake_pumps",
+      "label": "Seawater intake and discharge pumps",
+      "ontology_id": "load.intake_discharge_pump_power",
+      "rated_kw": 45.0,
+      "quantity": 3,
+      "duty_cycle": 0.25,
+      "driver": "constant",
+      "biomass_scaling": 0.2,
+      "criticality": "essential",
+      "noise_class": "pumps",
+      "source": {
+        "basis": "Daily make-up exchange of roughly 10 percent of system volume plus discharge",
+        "ref": "RAS design practice",
+        "confidence": "low"
+      }
+    },
+    {
+      "id": "chillers",
+      "label": "Process chillers and heat exchange pumps",
+      "ontology_id": "load.cooling_power",
+      "rated_kw": 75.0,
+      "quantity": 4,
+      "duty_cycle": 1.0,
+      "driver": "temperature",
+      "biomass_scaling": 0.0,
+      "criticality": "essential",
+      "critical_share": 0.5,
+      "noise_class": "cooling",
+      "source": {
+        "basis": "Temperature control is the largest or second-largest RAS load in hot climates; half of the cooling capacity is treated as critical because water temperature drift stresses stock within hours",
+        "ref": "Badiola et al. 2018; Salameh et al. 2025 (team literature review)",
+        "confidence": "low"
+      }
+    },
+    {
+      "id": "feeders",
+      "label": "Automatic feeders",
+      "ontology_id": "load.feeding_power",
+      "rated_kw": 0.5,
+      "quantity": 24,
+      "duty_cycle": 1.0,
+      "driver": "schedule",
+      "biomass_scaling": 0.5,
+      "schedule": {
+        "type": "events_per_day",
+        "count": 8,
+        "minutes": 15,
+        "first_hour": 6,
+        "span_hours": 16
+      },
+      "criticality": "essential",
+      "noise_class": "other",
+      "source": {
+        "basis": "Eight feedings per day of 15 minutes across daylight hours",
+        "ref": "RAS operating practice",
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "lighting",
+      "label": "Hall and photoperiod lighting",
+      "ontology_id": "load.lighting_power",
+      "rated_kw": 30.0,
+      "quantity": 1,
+      "duty_cycle": 1.0,
+      "driver": "schedule",
+      "biomass_scaling": 0.0,
+      "schedule": {
+        "type": "hours",
+        "on": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21
+        ]
+      },
+      "criticality": "deferrable",
+      "noise_class": "other",
+      "source": {
+        "basis": "LED lighting on a 17-hour photoperiod; sheddable for short periods",
+        "ref": "RAS operating practice",
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "controls",
+      "label": "Monitoring, PLC, sensors and alarms",
+      "ontology_id": "load.monitoring_controls_power",
+      "rated_kw": 12.0,
+      "quantity": 1,
+      "duty_cycle": 1.0,
+      "driver": "constant",
+      "biomass_scaling": 0.0,
+      "criticality": "critical",
+      "noise_class": "other",
+      "source": {
+        "basis": "Control room, instrumentation and communications",
+        "ref": "engineering estimate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "cold_chain",
+      "label": "Ice machine, cold store and processing",
+      "ontology_id": "load.cold_chain_power",
+      "rated_kw": 30.0,
+      "quantity": 2,
+      "duty_cycle": 0.55,
+      "driver": "constant",
+      "biomass_scaling": 0.5,
+      "criticality": "deferrable",
+      "noise_class": "cooling",
+      "source": {
+        "basis": "Harvest handling and cold storage scale with production",
+        "ref": "engineering estimate",
+        "confidence": "low"
+      }
+    },
+    {
+      "id": "office_hvac",
+      "label": "Office and staff building air conditioning",
+      "ontology_id": "load.cooling_power",
+      "rated_kw": 40.0,
+      "quantity": 1,
+      "duty_cycle": 1.0,
+      "driver": "temperature",
+      "biomass_scaling": 0.0,
+      "cooling": {
+        "t_set_c": 24.0,
+        "k_th_kw_per_degc": 6.0,
+        "q_base_kw_th": 15.0,
+        "cop_nominal": 3.0
+      },
+      "criticality": "deferrable",
+      "noise_class": "cooling",
+      "source": {
+        "basis": "Small administrative building; sheddable",
+        "ref": "engineering estimate",
+        "confidence": "low"
+      }
+    }
+  ],
+  "calibration_notes": [
+    "Calibrated on the Al-Lith 2016 NASA POWER year to land inside the literature bands in config/site/benchmarks.json: specific energy near 9.6 kWh/kg (Ayuso-Virgili et al. 2023 report 9.59 kWh/kg for a commercial-scale RAS), load factor 0.6 to 0.8, aeration plus oxygenation 25 to 45 percent, cooling 20 to 35 percent, critical fraction 50 to 75 percent.",
+    "The chiller thermal coefficients are the primary cooling knob; blower and PSA quantities are the aeration knob. Change one, rerun, and re-read the benchmark block before accepting.",
+    "No measured farm data were available. This inventory is an engineering estimate and every value carries status candidate until an aquaculture engineer reviews it."
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "provider": "openai_compatible",
+  "model": "replace-with-a-model-name",
+  "endpoint": "https://api.openai.com/v1/chat/completions",
+  "api_key_env": "OPENAI_API_KEY",
+  "temperature": 0,
+  "timeout_seconds": 120,
+  "note": "The key is read from the environment variable only. The model's answer is written to load/inventory_draft.json as a candidate and is never used unless --use-llm-draft is passed."
+}
