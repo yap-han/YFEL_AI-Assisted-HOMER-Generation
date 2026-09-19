@@ -1,4 +1,4 @@
-# Modular energy-mix evidence prototype — v0.6
+# Modular energy-mix evidence prototype — v0.7
 
 This runnable Python prototype supports a controlled workflow for rapidly assessing renewable, grid, storage and dispatchable conventional generation with HOMER or another optimisation model. The supplied application is a GCC fish farm, but the context profile, parameter ontology, evidence policy, validation engine and model registry are separate modules so the method can be reused for other locations and facilities.
 
@@ -45,6 +45,17 @@ The first successful LLM pass writes `output/advanced_pipeline/HUMAN_REVIEW.csv`
 
 Every provider call records model, operation, prompt version, immutable evidence hash, token usage, latency, configured pricing snapshot and estimated API cost in `output/advanced_pipeline/telemetry.json`.
 
+## v0.7 site-data layer
+
+The evidence pipeline supplies the literature-supported technology parameters. Version 0.7 adds the site layer that supplies everything else the minimum HOMER scenario needs: hourly load, GHI, temperature and wind files in HOMER's single-column format, the tariff, sellback, outage, fuel and financial inputs as a cited register, a sensitivity table, seeded Monte Carlo cases and an outage schedule, all with a manifest of sources and hashes. Weather comes from the free NASA POWER hourly API with a PVGIS cross-check; the load is synthesised bottom-up from an equipment archetype and validated against literature bands. Every value is a candidate for the human gate.
+
+```bash
+PYTHONPATH=src python -m homer_gcc site-generate   --spec config/site/site.saudi_allith.example.json --output output/site --pvgis
+PYTHONPATH=src python -m homer_gcc import-proposals   --db output/study.sqlite --file output/site/proposed_parameters_site.csv
+```
+
+See `docs/SITE_LAYER.md` for the method, the output map and the HOMER entry map.
+
 ## What the prototype now does
 
 | Stage | Function | Human control |
@@ -82,7 +93,7 @@ PYTHONPATH=src python -m homer_gcc quant-demo
 
 The demonstration exercises the seven quantitative modules, but every numerical evidence record and model output is explicitly synthetic. It is a software test, not a fish-farm result and not citable evidence.
 
-Run all tests (28 tests in v0.6):
+Run all tests (58 tests in v0.7; the optional real-corpus pilot test skips without the local corpus):
 
 ```bash
 PYTHONPATH=src python -m unittest discover -s tests -v

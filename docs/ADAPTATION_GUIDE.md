@@ -95,3 +95,7 @@ The v0.3 evidence, normalization, validation, human-review and model-registry ta
 7. Export approved inputs, run the chosen model externally and import its declared output metrics.
 
 The same database can register HOMER, MATLAB, Python or another model because the model-run layer stores generic parameter/value/unit snapshots. A model-specific adapter may be added without changing the evidence schema.
+
+## 9. Reuse the site layer
+
+The site layer is location-agnostic: copy `config/site/site.saudi_allith.example.json`, change the coordinates, UTC offset, production and register file, and supply an archetype whose `ontology_id` values exist in your load family. `site-generate` then produces the HOMER files and the register exports for the new site without code changes.
